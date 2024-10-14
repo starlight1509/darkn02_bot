@@ -4,7 +4,10 @@
   "description": "",
   "main": "build/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsup",
+    "start": "node build/main.js",
+    "format": "prettier --write \"src/**/*.ts\""
   },
   "imports": {
     "#lib/*": "./build/lib/*.js"
@@ -20,14 +23,12 @@
     "discord.js": "^14.16.3"
   },
   "devDependencies": {
-    "@eslint/js": "^9.12.0",
     "@sapphire/eslint-config": "^5.0.5",
     "@sapphire/prettier-config": "^2.0.0",
     "eslint": "^9.12.0",
     "globals": "^15.11.0",
     "prettier": "^3.3.3",
-    "typescript": "^5.6.3",
-    "typescript-eslint": "^8.8.1"
+    "tsup": "^8.3.0"
   },
   "eslintConfig": {
     "extends": "@sapphire"
