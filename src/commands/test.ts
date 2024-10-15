@@ -14,6 +14,6 @@ export class TestCommand extends Command {
 	}
 	@RequiresClientPermissions(PermissionFlagsBits.SendMessages)
 	public override async chatInputRun(interaction: ChatInputCommandInteraction, context: ChatInputCommand.RunContext) {
-		return interaction.reply(subtext(`Pong! \n Command used: ${context.commandName}`));
+		return interaction.reply(subtext(`Pong!\nCommand used: ${context.commandName}`));
 	}
 }

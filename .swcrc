@@ -1,16 +1,10 @@
 {
-    "$schema": "http://json.schemastore.org/swcrc",
     "jsc": {
         "parser": {
             "syntax": "typescript",
-            "decorators": true,
-            "dynamicImport": true,
-            "importAssertions": true
+            "decorators": true
         },
         "target": "esnext",
-        "transform": {
-            "decoratorMetadata": true
-        },
         "paths": {
             "#lib/*": ["lib/*"]
         },
