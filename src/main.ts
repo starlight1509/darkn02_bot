@@ -1,13 +1,16 @@
 import '#lib/setup';
-import { Client, Events } from 'discord.js';
-import { intents } from '#lib/misc/constant';
+import { DarkBot } from '#lib/client';
 
-const client = new Client({
-	intents: intents
-});
+const client = new DarkBot();
 
-client.once(Events.ClientReady, (c) => {
-	console.log('Logged in as %d', c.user.tag);
-});
-
-client.login();
+void (async () => {
+	try {
+		client.logger.info('Loading Entrance');
+		await client.login();
+		client.logger.info(`Entrance Loaded \n User: ${client.user?.tag}`);
+	} catch {
+		client.logger.fatal('Loading Entrance failed.');
+		await client.destroy();
+		process.exit(1);
+	}
+})();

@@ -4,7 +4,6 @@
         "rootDir": ".",
         "outDir": "../build",
         "baseUrl": ".",
-        "emitDeclarationOnly": true,
         "paths": {
             "#lib/*": ["lib/*"]
         }

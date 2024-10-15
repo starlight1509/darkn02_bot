@@ -1,0 +1,26 @@
+{
+    "$schema": "http://json.schemastore.org/swcrc",
+    "jsc": {
+        "parser": {
+            "syntax": "typescript",
+            "decorators": true,
+            "dynamicImport": true,
+            "importAssertions": true
+        },
+        "target": "esnext",
+        "transform": {
+            "decoratorMetadata": true
+        },
+        "paths": {
+            "#lib/*": ["lib/*"]
+        },
+        "baseUrl": "src"
+    },
+    "module": {
+        "type": "es6",
+        "strict": true,
+        "resolveFully": true
+    },
+    "sourceMaps": true,
+    "isModule": true
+}
