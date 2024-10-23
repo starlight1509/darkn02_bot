@@ -9,10 +9,7 @@ import { PermissionFlagsBits, subtext } from 'discord.js';
 export class TestCommand extends Command {
 	public override registerApplicationCommands(registry: ChatInputCommand.Registry) {
 		registry.registerChatInputCommand((builder) => {
-			builder
-				.setName(this.name)
-				.setDescription(this.description)
-				.addSubcommand((command) => command.setName('me').setDescription('me'));
+			builder.setName(this.name).setDescription(this.description);
 		});
 	}
 	@RequiresClientPermissions(PermissionFlagsBits.SendMessages)
