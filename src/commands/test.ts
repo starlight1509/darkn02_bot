@@ -1,19 +1,22 @@
 import { ApplyOptions, RequiresClientPermissions } from '@sapphire/decorators';
-import { ApplicationCommandRegistry, type ChatInputCommand, Command } from '@sapphire/framework';
-import { ChatInputCommandInteraction, PermissionFlagsBits, subtext } from 'discord.js';
+import { ChatInputCommand, Command } from '@sapphire/framework';
+import { PermissionFlagsBits, subtext } from 'discord.js';
 
 @ApplyOptions<ChatInputCommand.Options>({
 	description: 'Gay.',
 	preconditions: ['OwnerOnly']
 })
 export class TestCommand extends Command {
-	public override registerApplicationCommands(registry: ApplicationCommandRegistry) {
+	public override registerApplicationCommands(registry: ChatInputCommand.Registry) {
 		registry.registerChatInputCommand((builder) => {
-			builder.setName(this.name).setDescription(this.description);
+			builder
+				.setName(this.name)
+				.setDescription(this.description)
+				.addSubcommand((command) => command.setName('me').setDescription('me'));
 		});
 	}
 	@RequiresClientPermissions(PermissionFlagsBits.SendMessages)
-	public override async chatInputRun(interaction: ChatInputCommandInteraction, context: ChatInputCommand.RunContext) {
-		return interaction.reply(`Pong!\n${subtext(`Command used: ${context.commandName}`)}`);
+	public override async chatInputRun(interaction: ChatInputCommand.Interaction) {
+		return interaction.reply(`Pong!\n${subtext(`Command used: ${interaction.commandName}`)}`);
 	}
 }
