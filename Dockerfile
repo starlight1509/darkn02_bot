@@ -8,26 +8,19 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-COPY --chown=node:node ../package.json ./ \
-    --chown=node:node ../pnpm-lock.yaml ./ \
-    --chown=node:node ../tsconfig* ./ \
-    --chown=node:node ../.swcrc ./
+COPY --chown=node:node * /app/darkbot
 
 FROM base AS dev
 
 ENV NODE_ENV="development"
 
-USER node
-
 CMD [ "pnpm", "swc-watch:dev" ]
 
 FROM base AS builder
 
-COPY --chown=node:node ../ ./
-
 RUN pnpm swc-build
 
-FROM builder AS runner
+FROM builder AS prod
 
 ENV NODE_ENV="production"
 
