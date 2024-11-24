@@ -7,7 +7,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "swc-build": "swc src -d build --strip-leading-paths --delete-dir-on-start",
-    "swc-build:watch": "swc -w src -d build --strip-leading-paths --delete-dir-on-start",
+    "swc-watch": "swc -w src -d build --strip-leading-paths --delete-dir-on-start",
+    "swc-watch:dev": "conc 'pnpm swc-watch' 'pnpm start'",
     "start": "node --enable-source-maps .",
     "format": "prettier --write \"src/**/*.ts\""
   },
@@ -37,6 +38,7 @@
     "@sapphire/prettier-config": "^2.0.0",
     "@swc/cli": "0.4.1-nightly.20240914",
     "@swc/core": "^1.9.3",
+    "concurrently": "^9.1.0",
     "eslint": "^9.15.0",
     "globals": "^15.12.0",
     "prettier": "^3.3.3",
