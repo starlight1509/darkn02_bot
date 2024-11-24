@@ -6,16 +6,28 @@ RUN apt-get update && \
     apt-get upgrade -y --no-install-recommends && \
     apt-get install -y --no-install-recommends build-essential && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+    rm -rf /var/lib/apt/lists/* && \
+    apt-get autoremove
 
-COPY --chown=node:node . /opt/app/
-RUN corepack enable
+COPY --chown=node:node package.json .
+COPY --chown=node:node pnpm-lock.yaml .
+
+RUN corepack enable && \
+    pnpm install
 
 FROM base AS builder
+
+ENV NODE_ENV="development"
+
+COPY --chown=node:node .swcrc .
+COPY --chown=node:node tsconfig.base.json .
+COPY --chown=node:node src/ .
 
 RUN pnpm swc-build
 
 FROM base
+
+COPY --from=builder --chown=node:node /opt/app/build /opt/app/build
 
 ENV NODE_ENV="production"
 
