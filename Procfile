@@ -1,2 +1,2 @@
-build: pnpm build
+build: pnpm swc-build
 web: pnpm start
