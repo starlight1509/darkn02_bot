@@ -6,10 +6,10 @@ RUN apt-get update && \
     apt-get upgrade -y --no-install-recommends && \
     apt-get install -y --no-install-recommends build-essential && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/* && \
-    corepack enable
+    rm -rf /var/lib/apt/lists/*
 
-COPY --chown=node:node * /opt/app/
+COPY --chown=node:node . /opt/app/
+RUN corepack enable
 
 FROM base AS builder
 
