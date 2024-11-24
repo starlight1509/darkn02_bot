@@ -1,2 +1,2 @@
 build: pnpm build
-app: pnpm start
+worker: pnpm start
