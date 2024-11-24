@@ -1,15 +1,15 @@
 FROM node:lts as base
 
-WORKDIR /app/darkbot
+WORKDIR /opt/app
 
 RUN apt-get update && \
     apt-get upgrade -y --no-install-recommends && \
     apt-get install -y --no-install-recommends build-essential && \
     apt-get clean && \
-    rm -rf /var/lib/apt/lists/* \
+    rm -rf /var/lib/apt/lists/* && \
     corepack enable
 
-COPY --chown=node:node . /app/darkbot
+COPY --chown=node:node * /opt/app/
 
 FROM base AS builder
 
