@@ -15,7 +15,7 @@ jobs:
                     fetch-depth: 1
 
             -   name: Dokku Push
-                uses: dokku@github-action@master
+                uses: dokku/github-action@master
                 with:
                     branch: 'main'
                     git_remote_url: 'ssh://dokku@dokku.azmindroma.de:22/darksub-bot'
