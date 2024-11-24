@@ -21,13 +21,13 @@ ENV NODE_ENV="development"
 
 COPY --chown=node:node .swcrc .
 COPY --chown=node:node tsconfig.base.json .
-COPY --chown=node:node src/ .
+COPY --chown=node:node src .
 
 RUN pnpm swc-build
 
 FROM base
 
-COPY --from=builder --chown=node:node /opt/app/build /opt/app/build
+COPY --from=builder --chown=node:node /opt/app/build .
 
 ENV NODE_ENV="production"
 
