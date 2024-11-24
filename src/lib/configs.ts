@@ -1,7 +1,8 @@
 import { LogLevel } from '@sapphire/framework';
 import { ClientOptions, GatewayIntentBits, Partials } from 'discord.js';
+import { LavalinkNode } from 'riffy';
 
-const lavaNodes = [
+const lavaNodes: LavalinkNode[] = [
 	{
 		host: process.env['LAVALINK_HOST'],
 		password: process.env['LAVALINK_PASS'],

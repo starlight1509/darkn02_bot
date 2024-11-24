@@ -65,12 +65,6 @@ export class MusicCommand extends DarkCommand {
 								.setDescription('Volume percentage')
 								.setMinValue(10)
 								.setMaxValue(100)
-								.addChoices([
-									{ name: '100%', value: 100 },
-									{ name: '75%', value: 75 },
-									{ name: '50%', value: 50 },
-									{ name: '10%', value: 10 }
-								])
 						)
 				)
 				.addSubcommand((command) => command.setName('stop').setDescription('Stop the music player'))

@@ -21,7 +21,7 @@ export class AutocompleteHandler extends InteractionHandler {
 
 		switch (focused.name) {
 			case 'query': {
-				const searches = await YouTube.search(focused.value);
+				const searches = await YouTube.search(focused.value, { limit: 25, type: 'video' });
 				try {
 					return this.some(searches.map((matches) => ({ name: matches.title!, value: matches.url })));
 				} catch (err) {
