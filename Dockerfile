@@ -1,6 +1,8 @@
-FROM node:lts AS base
+FROM node:lts as base
 
 WORKDIR /app/darkbot
+
+ENV PATH="$PATH:/pnpm"
 
 RUN apt-get update && \
     apt-get upgrade -y --no-install-recommends && \
@@ -9,19 +11,13 @@ RUN apt-get update && \
     rm -rf /var/lib/apt/lists/* \
     corepack enable
 
-COPY --chown=node:node * /app/darkbot
-
-FROM base AS dev
-
-ENV NODE_ENV="development"
-
-CMD [ "pnpm", "swc-watch:dev" ]
+COPY --chown=node:node . /app/darkbot
 
 FROM base AS builder
 
 RUN pnpm swc-build
 
-FROM builder AS runner
+FROM base
 
 ENV NODE_ENV="production"
 
