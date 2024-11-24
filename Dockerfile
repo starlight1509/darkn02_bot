@@ -12,22 +12,21 @@ RUN apt-get update && \
 COPY --chown=node:node package.json .
 COPY --chown=node:node pnpm-lock.yaml .
 
-RUN corepack enable && \
-    pnpm install
-
 FROM base AS builder
 
 ENV NODE_ENV="development"
 
 COPY --chown=node:node .swcrc .
 COPY --chown=node:node tsconfig.base.json .
-COPY --chown=node:node src .
+COPY --chown=node:node src src
 
-RUN pnpm swc-build
+RUN corepack enable && \
+    pnpm install && \
+    pnpm swc-build
 
 FROM base
 
-COPY --from=builder --chown=node:node /opt/app/build .
+COPY --from=builder --chown=node:node /opt/app/build build
 
 ENV NODE_ENV="production"
 
