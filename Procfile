@@ -1,2 +1,2 @@
 build: pnpm build
-worker: pnpm start
+web: pnpm start
