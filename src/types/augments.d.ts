@@ -1,4 +1,4 @@
-import { ArrayString } from '@skyra/env-utilities';
+import { ArrayString, NumberString } from '@skyra/env-utilities';
 import { Riffy } from 'riffy';
 
 declare module '@skyra/env-utilities' {
@@ -7,6 +7,7 @@ declare module '@skyra/env-utilities' {
 		APPLICATION_ID: string;
 		LAVALINK_HOST: string;
 		LAVALINK_PASS: string;
+		LAVALINK_PORT: NumberString;
 	}
 }
 
