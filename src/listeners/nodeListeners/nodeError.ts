@@ -3,7 +3,7 @@ import { container, Listener } from '@sapphire/framework';
 import { Node } from 'riffy';
 
 @ApplyOptions<Listener.Options>({
-	emitter: container.client.riffy,
+	emitter: container.client.manager,
 	event: 'nodeError'
 })
 export class NodeListeners extends Listener {

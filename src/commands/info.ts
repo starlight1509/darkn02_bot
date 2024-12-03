@@ -1,4 +1,3 @@
-import { DarkCommand } from '#lib/classes';
 import { embedGen } from '#lib/utils';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Subcommand } from '@sapphire/plugin-subcommands';
@@ -31,7 +30,7 @@ import { GuildMember } from 'discord.js';
 		}
 	]
 })
-export class InfoCommand extends DarkCommand {
+export class InfoCommand extends Subcommand {
 	private embeds = embedGen();
 	public override registerApplicationCommands(registry: Subcommand.Registry) {
 		registry.registerChatInputCommand((builder) =>

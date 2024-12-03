@@ -1,5 +1,5 @@
 import '#lib/setup';
-import { DarkBot } from '#lib/classes';
+import { DarkBot } from '#lib/classes/DarkBot';
 
 const client = new DarkBot();
 

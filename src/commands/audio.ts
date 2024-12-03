@@ -1,4 +1,3 @@
-import { DarkCommand } from '#lib/classes';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Subcommand } from '@sapphire/plugin-subcommands';
 import { GuildMember, inlineCode } from 'discord.js';
@@ -42,7 +41,7 @@ import { GuildMember, inlineCode } from 'discord.js';
 		}
 	]
 })
-export class MusicCommand extends DarkCommand {
+export class MusicCommand extends Subcommand {
 	public override registerApplicationCommands(registry: Subcommand.Registry) {
 		registry.registerChatInputCommand((builder) =>
 			builder
@@ -59,13 +58,7 @@ export class MusicCommand extends DarkCommand {
 					command
 						.setName('volume')
 						.setDescription('Player volume to adjust')
-						.addNumberOption((input) =>
-							input
-								.setName('num')
-								.setDescription('Volume percentage')
-								.setMinValue(10)
-								.setMaxValue(100)
-						)
+						.addNumberOption((input) => input.setName('num').setDescription('Volume percentage').setMinValue(10).setMaxValue(100))
 				)
 				.addSubcommand((command) => command.setName('stop').setDescription('Stop the music player'))
 				.addSubcommandGroup((group) =>
@@ -103,7 +96,7 @@ export class MusicCommand extends DarkCommand {
 				}
 			});
 
-		const player = this.container.client.riffy.createConnection({
+		const player = this.container.client.manager.createConnection({
 			guildId: interaction.guildId!,
 			voiceChannel: member.voice.channelId!,
 			textChannel: interaction.channelId,
@@ -111,7 +104,7 @@ export class MusicCommand extends DarkCommand {
 			defaultVolume: 100
 		});
 
-		const resolve = await this.container.client.riffy.resolve({ query, requester: interaction.user });
+		const resolve = await this.container.client.manager.resolve({ query, requester: interaction.user });
 
 		switch (resolve.loadType) {
 			case 'playlist':
@@ -136,9 +129,9 @@ export class MusicCommand extends DarkCommand {
 		}
 	}
 	public async audioPause(interaction: Subcommand.ChatInputCommandInteraction) {
-		const player = this.container.client.riffy.get(interaction.guildId!)!;
+		const player = this.container.client.manager.get(interaction.guild!.id);
 
-		if (!player.paused && player.playing && !player.voiceChannel) {
+		if (!player.paused && player.playing && player.voiceChannel) {
 			player.pause(true);
 			return interaction.reply({ content: 'Paused', ephemeral: true });
 		} else {
@@ -148,32 +141,22 @@ export class MusicCommand extends DarkCommand {
 	}
 	public async audioVolume(interaction: Subcommand.ChatInputCommandInteraction) {
 		const vol = interaction.options.getNumber('num', true);
-		const player = this.container.client.riffy.get(interaction.guildId!)!;
+		const player = this.container.client.manager.get(interaction.guildId!)!;
 
-		if (player.paused && player.playing && player.voiceChannel) {
+		if (player.paused && !player.playing && player.voiceChannel) {
 			return interaction.reply({ content: `The audio player is either ${inlineCode('paused')} or ${inlineCode('stopped')}.` });
 		} else {
 			player.setVolume(vol);
 			return interaction.reply({ content: `The volume has changed to ${inlineCode(`${vol}%`)}.` });
 		}
 	}
-	public async queueList(interaction: Subcommand.ChatInputCommandInteraction) {
-		return interaction.reply('Soon');
-	}
-	public async queueAdd(interaction: Subcommand.ChatInputCommandInteraction) {
-		return interaction.reply('Soon');
-	}
-	public async queueRemove(interaction: Subcommand.ChatInputCommandInteraction) {
-		return interaction.reply('Soon');
-	}
+	// public async queueList(interaction: Subcommand.ChatInputCommandInteraction) {}
+	// public async queueAdd(interaction: Subcommand.ChatInputCommandInteraction) {}
+	// public async queueRemove(interaction: Subcommand.ChatInputCommandInteraction) {}
 	public async queueDestroy(interaction: Subcommand.ChatInputCommandInteraction) {
-		const player = this.container.client.riffy.get(interaction.guildId!)!;
+		const player = this.container.client.manager.get(interaction.guild!.id);
 
-		if (!player.voiceChannel && player.queue) {
-			return interaction.reply({ content: 'hh', ephemeral: true });
-		} else {
-			player.destroy();
-			return interaction.reply('All queue has been cleared.');
-		}
+		if (player.queue && player.voiceChannel) player.destroy();
+		return interaction.reply({ content: 'Player Stopped', ephemeral: true });
 	}
 }

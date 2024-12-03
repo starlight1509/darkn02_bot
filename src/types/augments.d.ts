@@ -19,6 +19,6 @@ declare module '@sapphire/framework' {
 
 declare module 'discord.js' {
 	interface Client {
-		riffy: Riffy;
+		manager: Riffy;
 	}
 }

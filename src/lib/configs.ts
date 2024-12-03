@@ -8,7 +8,8 @@ const lavaNodes: LavalinkNode[] = [
 		host: envParseString('LAVALINK_HOST', '0.0.0.0'),
 		password: envParseString('LAVALINK_PASS', 'youshallnotpass'),
 		port: envParseNumber('LAVALINK_PORT', 2333),
-		secure: false
+		secure: false,
+		name: 'DarkBot_Lavalink'
 	}
 ];
 
