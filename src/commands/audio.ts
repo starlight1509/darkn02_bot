@@ -58,7 +58,7 @@ export class MusicCommand extends Subcommand {
 					command
 						.setName('volume')
 						.setDescription('Player volume to adjust')
-						.addNumberOption((input) => input.setName('num').setDescription('Volume percentage').setMinValue(10).setMaxValue(100))
+						.addNumberOption((input) => input.setName('num').setDescription('Volume percentage').setMinValue(10).setMaxValue(100).setRequired(true))
 				)
 				.addSubcommand((command) => command.setName('stop').setDescription('Stop the music player'))
 				.addSubcommandGroup((group) =>
