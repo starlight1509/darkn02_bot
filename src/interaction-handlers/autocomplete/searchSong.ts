@@ -1,16 +1,15 @@
 import { ApplyOptions } from '@sapphire/decorators';
-import { InteractionHandler, InteractionHandlerTypes } from '@sapphire/framework';
-import { Subcommand } from '@sapphire/plugin-subcommands';
+import { InteractionHandler, InteractionHandlerTypes, Command } from '@sapphire/framework';
 import { YouTube } from 'youtube-sr';
 
 @ApplyOptions<InteractionHandler.Options>({
 	interactionHandlerType: InteractionHandlerTypes.Autocomplete
 })
 export class AutocompleteHandler extends InteractionHandler {
-	public override async run(interaction: Subcommand.AutocompleteInteraction, result: InteractionHandler.ParseResult<this>) {
+	public override async run(interaction: Command.AutocompleteInteraction, result: InteractionHandler.ParseResult<this>) {
 		return interaction.respond(result);
 	}
-	public override async parse(interaction: Subcommand.AutocompleteInteraction) {
+	public override async parse(interaction: Command.AutocompleteInteraction) {
 		if (
 			interaction.commandName !== 'audio' || //
 			interaction.options.getSubcommand() !== 'play'
@@ -25,16 +24,8 @@ export class AutocompleteHandler extends InteractionHandler {
 					limit: 25,
 					type: 'video'
 				});
-				try {
-					return this.some(
-						searches.map((matches) => ({
-							name: matches.title!,
-							value: matches.url
-						}))
-					);
-				} catch {
-					return this.none();
-				}
+
+				return this.some(searches.map((matches) => ({ name: matches.title!, value: matches.url })));
 			}
 			default:
 				return this.none();

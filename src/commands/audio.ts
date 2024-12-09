@@ -14,6 +14,10 @@ import { GuildMember, inlineCode } from 'discord.js';
 			chatInputRun: 'audioPause'
 		},
 		{
+			name: 'skip',
+			chatInputRun: 'audioSkip'
+		},
+		{
 			name: 'queue',
 			type: 'group',
 			entries: [
@@ -37,7 +41,7 @@ import { GuildMember, inlineCode } from 'discord.js';
 		},
 		{
 			name: 'stop',
-			chatInputRun: 'queueDestroy'
+			chatInputRun: 'audioDisconnect'
 		}
 	]
 })
@@ -58,9 +62,17 @@ export class MusicCommand extends Subcommand {
 					command
 						.setName('volume')
 						.setDescription('Player volume to adjust')
-						.addNumberOption((input) => input.setName('num').setDescription('Volume percentage').setMinValue(10).setMaxValue(100).setRequired(true))
+						.addNumberOption((input) =>
+							input.setName('num').setDescription('Volume percentage').setMinValue(10).setMaxValue(100).setRequired(true)
+						)
 				)
-				.addSubcommand((command) => command.setName('stop').setDescription('Stop the music player'))
+				.addSubcommand((command) =>
+					command
+						.setName('skip')
+						.setDescription('Skip the current song')
+						.addNumberOption((num) => num.setName('id').setDescription('Song id to skip to'))
+				)
+				.addSubcommand((command) => command.setName('stop').setDescription('Stop the music player and disconnect from Voice Channel'))
 				.addSubcommandGroup((group) =>
 					group
 						.setName('queue')
@@ -89,7 +101,7 @@ export class MusicCommand extends Subcommand {
 		const query = interaction.options.getString('query', true);
 
 		if (!member.voice.channel)
-			return interaction.editReply({
+			await interaction.editReply({
 				content: 'Please join a Voice Channel first.',
 				options: {
 					ephemeral: true
@@ -104,59 +116,74 @@ export class MusicCommand extends Subcommand {
 			defaultVolume: 100
 		});
 
-		const resolve = await this.container.client.manager.resolve({ query, requester: interaction.user });
+		const res = await this.container.client.manager.resolve({ query, requester: interaction.user });
 
-		switch (resolve.loadType) {
+		if (!player.connected) player.connect();
+
+		switch (res.loadType) {
 			case 'playlist':
-				for (const track of resolve.tracks) {
+				for (const track of res.tracks) {
 					track.info.requester = interaction.user;
 					player.queue.add(track);
 				}
 				if (!player.playing && !player.paused) player.play();
 				return interaction.editReply({
-					content: `Added ${inlineCode(`${resolve.tracks.length} tracks`)} from ${inlineCode(`${resolve.playlistInfo?.name}`)}`
+					content: `Added ${inlineCode(`${res.tracks.length} track(s) from ${inlineCode(res.playlistInfo!.name)}`)}`
 				});
 			case 'search':
 			case 'track':
-				const track = resolve.tracks.shift()!;
+				const track = res.tracks.shift()!;
 				track.info.requester = interaction.user;
 
 				player.queue.add(track);
 				if (!player.playing && !player.paused) player.play();
 				return interaction.editReply({ content: `Added: ${inlineCode(track.info.title)}` });
 			default:
-				return interaction.editReply({ content: 'No results found', options: { ephemeral: true } });
+				return interaction.editReply({ content: 'Query not found', options: { ephemeral: true } });
 		}
 	}
 	public async audioPause(interaction: Subcommand.ChatInputCommandInteraction) {
-		const player = this.container.client.manager.get(interaction.guild!.id);
+		const player = this.container.client.manager.players.get(interaction.guildId!)!;
 
-		if (!player.paused && player.playing && player.voiceChannel) {
+		if (!player.paused && player.playing) {
 			player.pause(true);
 			return interaction.reply({ content: 'Paused', ephemeral: true });
 		} else {
 			player.pause(false);
-			return interaction.reply({ content: 'Unpaused', ephemeral: true });
+			return interaction.reply({ content: 'Resumed', ephemeral: true });
 		}
 	}
 	public async audioVolume(interaction: Subcommand.ChatInputCommandInteraction) {
 		const vol = interaction.options.getNumber('num', true);
-		const player = this.container.client.manager.get(interaction.guildId!)!;
+		const player = this.container.client.manager.players.get(interaction.guildId!)!;
 
-		if (player.paused && !player.playing && player.voiceChannel) {
+		if (player.paused && !player.playing) {
 			return interaction.reply({ content: `The audio player is either ${inlineCode('paused')} or ${inlineCode('stopped')}.` });
 		} else {
 			player.setVolume(vol);
 			return interaction.reply({ content: `The volume has changed to ${inlineCode(`${vol}%`)}.` });
 		}
 	}
+	public async audioSkip(interaction: Subcommand.ChatInputCommandInteraction) {
+		await interaction.deferReply({ ephemeral: true });
+		const player = this.container.client.manager.players.get(interaction.guildId!)!;
+		const id = interaction.options.getNumber('id');
+
+		if (id) {
+			player.stop();
+			await interaction.editReply({ content: `Skipped to song id ${id}` });
+		} else {
+			player.stop();
+			await interaction.editReply({ content: 'Song skipped' });
+		}
+	}
+	public async audioDisconnect(interaction: Subcommand.ChatInputCommandInteraction) {
+		const player = this.container.client.manager.players.get(interaction.guildId!)!;
+
+		if (player.queue) player.destroy();
+		return interaction.reply({ content: 'Player Stopped', ephemeral: true });
+	}
 	// public async queueList(interaction: Subcommand.ChatInputCommandInteraction) {}
 	// public async queueAdd(interaction: Subcommand.ChatInputCommandInteraction) {}
 	// public async queueRemove(interaction: Subcommand.ChatInputCommandInteraction) {}
-	public async queueDestroy(interaction: Subcommand.ChatInputCommandInteraction) {
-		const player = this.container.client.manager.get(interaction.guild!.id);
-
-		if (player.queue && player.voiceChannel) player.destroy();
-		return interaction.reply({ content: 'Player Stopped', ephemeral: true });
-	}
 }

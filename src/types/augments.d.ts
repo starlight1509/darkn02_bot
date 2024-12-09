@@ -8,6 +8,7 @@ declare module '@skyra/env-utilities' {
 		LAVALINK_HOST: string;
 		LAVALINK_PASS: string;
 		LAVALINK_PORT: NumberString;
+		LASTFM_KEY: string;
 	}
 }
 

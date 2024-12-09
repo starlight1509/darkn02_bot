@@ -8,9 +8,9 @@ import { Player } from 'riffy';
 	event: 'queueEnd'
 })
 export class NodeListeners extends Listener {
-	public override run(player: Player) {
+	public override async run(player: Player) {
 		if (player.isAutoplay) player.autoplay(player);
 		else player.destroy();
-		handleChannel(player.textChannel!).send('Queue has ended.');
+		handleChannel(player.textChannel).send('Queue has ended.');
 	}
 }

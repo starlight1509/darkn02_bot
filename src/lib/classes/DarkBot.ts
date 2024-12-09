@@ -9,9 +9,9 @@ export class DarkBot extends SapphireClient {
 		super(botConfigs);
 		this.manager = new Riffy(this, nodes, {
 			restVersion: 'v4',
-			send: (payload) => {
-				const guild = this.guilds.cache.get(payload.d.guild_id);
-				if (guild) guild.shard.send(payload);
+			send: (p) => {
+				const guild = this.guilds.cache.get(p.d.guild_id);
+				if (guild) guild.shard.send(p);
 			},
 			defaultSearchPlatform: 'ytsearch'
 		});

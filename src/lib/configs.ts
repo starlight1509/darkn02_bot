@@ -9,7 +9,7 @@ const lavaNodes: LavalinkNode[] = [
 		password: envParseString('LAVALINK_PASS', 'youshallnotpass'),
 		port: envParseNumber('LAVALINK_PORT', 2333),
 		secure: false,
-		name: 'DarkBot_Lavalink'
+		name: 'DarkNode'
 	}
 ];
 
