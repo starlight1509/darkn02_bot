@@ -14,7 +14,10 @@ export class DarkBot extends SapphireClient {
 				repliedUser: false
 			},
 			logger: configs.client.logs,
-			partials: [Partials.Channel, Partials.GuildMember]
+			partials: [Partials.Channel, Partials.GuildMember],
+			hmr: {
+				enabled: process.env['NODE_ENV'] === 'development'
+			}
 		});
 		this.options.presence = {
 			status: 'idle',
