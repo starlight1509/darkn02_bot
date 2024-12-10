@@ -1,23 +1,43 @@
-import { botConfigs, lavaNodes as nodes } from '#lib/configs';
+import configs from '#lib/configs';
 import { SapphireClient, Command } from '@sapphire/framework';
-import { Events, PermissionFlagsBits } from 'discord.js';
-import { Riffy } from 'riffy';
+import { envParseString } from '@skyra/env-utilities';
+import { ActivityType, Events, Partials, PermissionFlagsBits } from 'discord.js';
+import { Manager, VoiceServer } from 'magmastream';
 
 // Client
 export class DarkBot extends SapphireClient {
 	public constructor() {
-		super(botConfigs);
-		this.manager = new Riffy(this, nodes, {
-			restVersion: 'v4',
-			send: (p) => {
-				const guild = this.guilds.cache.get(p.d.guild_id);
-				if (guild) guild.shard.send(p);
+		super({
+			intents: configs.client.intents,
+			allowedMentions: {
+				parse: ['users'],
+				repliedUser: false
 			},
-			defaultSearchPlatform: 'ytsearch'
+			logger: configs.client.logs,
+			partials: [Partials.Channel, Partials.GuildMember]
+		});
+		this.options.presence = {
+			status: 'idle',
+			activities: [
+				{
+					name: 'Jump High',
+					type: ActivityType.Watching
+				}
+			]
+		};
+		this.manager = new Manager({
+			lastFmApiKey: envParseString('LASTFM_KEY', ''),
+			nodes: configs.lavaNodes,
+			defaultSearchPlatform: 'youtube music',
+			send: (id, payload) => {
+				const guild = this.guilds.cache.get(id);
+				if (guild) guild.shard.send(payload);
+			},
+			clientName: 'DarkBot/1.1'
 		});
 
 		this.on(Events.Raw, (d) => {
-			this.manager.updateVoiceState(d);
+			this.manager.updateVoiceState(d as VoiceServer);
 		});
 	}
 }

@@ -1,6 +1,6 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { container, Listener } from '@sapphire/framework';
-import { Node } from 'riffy';
+import { Node } from 'magmastream';
 
 @ApplyOptions<Listener.Options>({
 	emitter: container.client.manager,
@@ -8,6 +8,6 @@ import { Node } from 'riffy';
 })
 export class NodeListeners extends Listener {
 	public override run(node: Node, error: Error) {
-		this.container.logger.info(`Encountered an error in node: ${node.name}\nError: ${error.message}`);
+		this.container.logger.info(`Encountered an error in node: ${node.options.identifier}\nError: ${error.message}`);
 	}
 }

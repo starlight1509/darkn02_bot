@@ -1,7 +1,7 @@
 import { handleChannel } from '#lib/utils';
 import { ApplyOptions } from '@sapphire/decorators';
 import { container, Listener } from '@sapphire/framework';
-import { Player } from 'riffy';
+import { Player } from 'magmastream';
 
 @ApplyOptions<Listener.Options>({
 	emitter: container.client.manager,
@@ -9,8 +9,8 @@ import { Player } from 'riffy';
 })
 export class NodeListeners extends Listener {
 	public override async run(player: Player) {
-		if (player.isAutoplay) player.autoplay(player);
+		if (player.isAutoplay) player.isAutoplay;
 		else player.destroy();
-		handleChannel(player.textChannel).send('Queue has ended.');
+		handleChannel(player.textChannel!).send('Queue has ended.');
 	}
 }

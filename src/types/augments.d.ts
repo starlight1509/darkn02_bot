@@ -1,5 +1,5 @@
 import { ArrayString, NumberString } from '@skyra/env-utilities';
-import { Riffy } from 'riffy';
+import { Manager } from 'magmastream';
 
 declare module '@skyra/env-utilities' {
 	interface Env {
@@ -20,6 +20,6 @@ declare module '@sapphire/framework' {
 
 declare module 'discord.js' {
 	interface Client {
-		manager: Riffy;
+		manager: Manager;
 	}
 }
