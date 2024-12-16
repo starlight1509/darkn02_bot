@@ -5,7 +5,5 @@ const compat = new FlatCompat();
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
-	{
-		...compat.config(sapphireEslintConfig)
-	}
+	...compat.config(sapphireEslintConfig)
 ]
