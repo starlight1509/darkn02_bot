@@ -1,0 +1,22 @@
+name: Dokku deploy
+
+on:
+    push:
+        branches:
+          - main
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            -   name: Repo checkout
+                uses: actions/checkout@v4
+                with:
+                    fetch-depth: 1
+
+            -   name: Dokku Push
+                uses: dokku/github-action@master
+                with:
+                    branch: 'main'
+                    git_remote_url: 'ssh://dokku@dokku.me:22/darksub-bot'
+                    ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
