@@ -36,7 +36,7 @@ export class DarkBot extends SapphireClient {
 				const guild = this.guilds.cache.get(id);
 				if (guild) guild.shard.send(payload);
 			},
-			clientName: 'DarkBot/1.1'
+			clientName: 'magmastream/2.6.0'
 		});
 
 		this.on(Events.Raw, (d) => {
