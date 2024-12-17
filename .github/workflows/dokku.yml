@@ -8,12 +8,6 @@ on:
 jobs:
     deploy:
         runs-on: ubuntu-latest
-        env:
-            DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
-            LASTFM_KEY: ${{ secrets.LASTFM_KEY }}
-            LAVALINK_PORT: ${{ secrets.LAVALINK_PORT }}
-            LAVALINK_PASS: ${{ secrets.LAVALINK_PASS }}
-            OWNERID: ${{ secrets.OWNERID }}
         steps:
             -   name: Repo checkout
                 uses: actions/checkout@v4

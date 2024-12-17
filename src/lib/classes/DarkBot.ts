@@ -29,7 +29,7 @@ export class DarkBot extends SapphireClient {
 			]
 		};
 		this.manager = new Manager({
-			lastFmApiKey: envParseString('LASTFM_KEY', ''),
+			lastFmApiKey: envParseString('LASTFM_KEY'),
 			nodes: configs.lavaNodes,
 			defaultSearchPlatform: 'youtube music',
 			send: (id, payload) => {
