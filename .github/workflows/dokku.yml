@@ -18,5 +18,5 @@ jobs:
                 uses: dokku/github-action@master
                 with:
                     branch: 'main'
-                    git_remote_url: 'ssh://dokku@dokku.me:22/darksub-bot'
+                    git_remote_url: 'ssh://dokku@${{ secrets.SSH_HOST }}:22/darksub-bot'
                     ssh_private_key: ${{ secrets.SSH_PRIVATE_KEY }}
