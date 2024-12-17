@@ -14,8 +14,7 @@
     "module": {
         "type": "es6",
         "strict": true,
-        "resolveFully": true,
-        "outFileExtension": "mjs"
+        "resolveFully": true
     },
     "sourceMaps": true,
     "isModule": true
