@@ -1,8 +1,7 @@
 // import { handleChannel } from '#lib/utils';
-import { handleChannel } from '#lib/utils';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Subcommand } from '@sapphire/plugin-subcommands';
-import { GuildMember, inlineCode, TextBasedChannel } from 'discord.js';
+import { GuildMember, inlineCode } from 'discord.js';
 
 @ApplyOptions<Subcommand.Options>({
 	description: 'Music & Audio',
@@ -88,11 +87,11 @@ export class MusicCommand extends Subcommand {
 		);
 	}
 	public async audioPlay(interaction: Subcommand.ChatInputCommandInteraction) {
-		await interaction.deferReply({ ephemeral: true });
+		await interaction.deferReply();
 		const member = interaction.member as GuildMember;
 		const query = interaction.options.getString('query', true);
 
-		this.checkVoice(member, interaction.channel!);
+		this.checkVoice(member, interaction);
 
 		const player = this.container.client.manager.create({
 			guild: interaction.guildId!,
@@ -128,7 +127,7 @@ export class MusicCommand extends Subcommand {
 		const player = this.container.client.manager.players.get(interaction.guildId!)!;
 		const member = interaction.member as GuildMember;
 
-		this.checkVoice(member, interaction.channel!);
+		this.checkVoice(member, interaction);
 
 		if (!player.paused && player.playing) {
 			player.pause(true);
@@ -141,10 +140,9 @@ export class MusicCommand extends Subcommand {
 	public async audioVolume(interaction: Subcommand.ChatInputCommandInteraction) {
 		const vol = interaction.options.getInteger('vol', true);
 		const player = this.container.client.manager.players.get(interaction.guildId!)!;
-
 		const member = interaction.member as GuildMember;
 
-		this.checkVoice(member, interaction.channel!);
+		await this.checkVoice(member, interaction);
 
 		if (player.paused && !player.playing) {
 			return interaction.reply({ content: `The audio player is either ${inlineCode('paused')} or ${inlineCode('stopped')}.` });
@@ -154,9 +152,11 @@ export class MusicCommand extends Subcommand {
 		}
 	}
 	public async audioSkip(interaction: Subcommand.ChatInputCommandInteraction) {
-		await interaction.deferReply({ ephemeral: true });
 		const player = this.container.client.manager.players.get(interaction.guildId!)!;
 		const id = interaction.options.getInteger('id');
+		const member = interaction.member as GuildMember;
+
+		await this.checkVoice(member, interaction);
 
 		if (id) {
 			player.stop(id);
@@ -168,10 +168,9 @@ export class MusicCommand extends Subcommand {
 	}
 	public async audioDisconnect(interaction: Subcommand.ChatInputCommandInteraction) {
 		const player = this.container.client.manager.players.get(interaction.guildId!)!;
-
 		const member = interaction.member as GuildMember;
 
-		this.checkVoice(member, interaction.channel!);
+		await this.checkVoice(member, interaction);
 
 		if (player.queue) player.destroy();
 		return interaction.reply({ content: 'Player Stopped', ephemeral: true });
@@ -183,8 +182,9 @@ export class MusicCommand extends Subcommand {
 
 	// public async queueRemove(interaction: Subcommand.ChatInputCommandInteraction) {}
 
-	private checkVoice(member: GuildMember, channel: TextBasedChannel) {
+	private async checkVoice(member: GuildMember, _: Subcommand.ChatInputCommandInteraction) {
+		await _.deferReply();
 		if (member.voice.channelId) return;
-		else return handleChannel(channel.id)!.send({ content: 'Please join a voice channel.', options: { ephemeral: true } });
+		else return _.editReply({ content: 'Please join a voice channel.', options: { ephemeral: true } });
 	}
 }
