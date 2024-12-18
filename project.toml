@@ -1,0 +1,16 @@
+[_]
+schema-version = "0.14"
+id = "com.github.darkbot"
+name = "DarkSub-Bot"
+version = "1.0.0"
+authors = "starlight1509"
+
+[io.buildpacks]
+include = [
+    "src/"
+]
+
+[[io.buildpacks.build.group]]
+uri = "urn:cnb:registry:paketo-buildpacks/nodejs"
+version = "7.0.0"
+
