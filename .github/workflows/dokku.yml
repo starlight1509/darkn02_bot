@@ -11,6 +11,8 @@ jobs:
         steps:
             -   name: Repo checkout
                 uses: actions/checkout@v4
+                with:
+                    fetch-depth: 0
 
             -   name: Dokku Push
                 uses: dokku/github-action@master
