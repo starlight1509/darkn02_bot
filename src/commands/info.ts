@@ -138,7 +138,7 @@ export class InfoCommand extends Subcommand {
 				},
 				{
 					name: 'Stats',
-					value: `${bold('Uptime')}:${this.duration.format(this.container.client.uptime!)} | ${time(roundedUptime, TimestampStyles.RelativeTime)}\n${bold('Guild(s)')}: ${this.container.client.guilds.cache.size}\n${bold('Channel(s)')}: ${`${this.container.client.channels.cache.size}`} ${bold('User(s)')}: ${this.container.client.users.cache.size}\n${bold('Ping/Latency')}: Bot: ${roundNumber(Date.now() - interaction.createdTimestamp)}ms | API: ${roundNumber(this.container.client.ws.ping)}ms`
+					value: `${bold('Uptime')}:${this.duration.format(this.container.client.uptime!)} | ${time(roundedUptime, TimestampStyles.RelativeTime)}\n${bold('Guild(s)')}: ${this.container.client.guilds.cache.size}\n${bold('Channel(s)')}: ${`${this.container.client.channels.cache.size}`}\n${bold('User(s)')}: ${this.container.client.users.cache.size}\n${bold('Ping/Latency')}: Bot: ${roundNumber(Date.now() - interaction.createdTimestamp)}ms | API: ${roundNumber(this.container.client.ws.ping)}ms`
 				},
 				{
 					name: 'Libraries',
