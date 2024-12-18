@@ -10,9 +10,9 @@ import { DurationFormatter } from '@sapphire/time-utilities';
 	event: 'trackStart'
 })
 export class NodeListeners extends Listener {
-	public override run(player: Player, track: Track) {
+	public override async run(player: Player, track: Track) {
 		const trackDuration = new DurationFormatter().format(track.duration);
-		handleChannel(player.textChannel!).send({
+		const p = await handleChannel(player.textChannel!)!.send({
 			embeds: embedGen({
 				title: 'Now Playing',
 				description: `${hyperlink('Track URL', track.uri)}`,
@@ -46,5 +46,6 @@ export class NodeListeners extends Listener {
 				color: Colors.Blurple
 			})
 		});
+		player.setNowPlayingMessage(p);
 	}
 }

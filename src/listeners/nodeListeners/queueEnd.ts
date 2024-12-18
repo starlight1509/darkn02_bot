@@ -11,6 +11,6 @@ export class NodeListeners extends Listener {
 	public override async run(player: Player) {
 		if (player.isAutoplay) player.isAutoplay;
 		else player.destroy();
-		handleChannel(player.textChannel!).send('Queue has ended.');
+		handleChannel(player.textChannel!)!.send('Queue has ended.');
 	}
 }

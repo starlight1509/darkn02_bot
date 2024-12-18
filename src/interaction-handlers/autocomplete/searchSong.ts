@@ -1,15 +1,16 @@
 import { ApplyOptions } from '@sapphire/decorators';
-import { InteractionHandler, InteractionHandlerTypes, Command } from '@sapphire/framework';
+import { InteractionHandler, InteractionHandlerTypes } from '@sapphire/framework';
+import { AutocompleteInteraction } from 'discord.js';
 import { YouTube } from 'youtube-sr';
 
 @ApplyOptions<InteractionHandler.Options>({
 	interactionHandlerType: InteractionHandlerTypes.Autocomplete
 })
 export class AutocompleteHandler extends InteractionHandler {
-	public override async run(interaction: Command.AutocompleteInteraction, result: InteractionHandler.ParseResult<this>) {
+	public override async run(interaction: AutocompleteInteraction, result: InteractionHandler.ParseResult<this>) {
 		return interaction.respond(result);
 	}
-	public override async parse(interaction: Command.AutocompleteInteraction) {
+	public override async parse(interaction: AutocompleteInteraction) {
 		if (
 			interaction.commandName !== 'audio' || //
 			interaction.options.getSubcommand() !== 'play'

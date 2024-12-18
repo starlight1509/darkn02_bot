@@ -1,3 +1,4 @@
+// import { handleChannel } from '#lib/utils';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Subcommand } from '@sapphire/plugin-subcommands';
 import { GuildMember, inlineCode } from 'discord.js';
@@ -26,10 +27,6 @@ import { GuildMember, inlineCode } from 'discord.js';
 					chatInputRun: 'queueList'
 				},
 				{
-					name: 'add',
-					chatInputRun: 'queueAdd'
-				},
-				{
 					name: 'remove',
 					chatInputRun: 'queueRemove'
 				}
@@ -43,8 +40,7 @@ import { GuildMember, inlineCode } from 'discord.js';
 			name: 'stop',
 			chatInputRun: 'audioDisconnect'
 		}
-	],
-	preconditions: ['GuildVoiceOnly']
+	]
 })
 export class MusicCommand extends Subcommand {
 	public override registerApplicationCommands(registry: Subcommand.Registry) {
@@ -81,12 +77,6 @@ export class MusicCommand extends Subcommand {
 						.addSubcommand((command) => command.setName('list').setDescription('Queue List'))
 						.addSubcommand((command) =>
 							command
-								.setName('add')
-								.setDescription('Add song to queue')
-								.addStringOption((input) => input.setName('url').setDescription('The URL of the song to add').setRequired(true))
-						)
-						.addSubcommand((command) =>
-							command
 								.setName('remove')
 								.setDescription('Remove song from queue')
 								.addIntegerOption((input) =>
@@ -100,6 +90,8 @@ export class MusicCommand extends Subcommand {
 		await interaction.deferReply({ ephemeral: true });
 		const member = interaction.member as GuildMember;
 		const query = interaction.options.getString('query', true);
+
+		this.checkVoice(member);
 
 		const player = this.container.client.manager.create({
 			guild: interaction.guildId!,
@@ -133,6 +125,9 @@ export class MusicCommand extends Subcommand {
 	}
 	public async audioPause(interaction: Subcommand.ChatInputCommandInteraction) {
 		const player = this.container.client.manager.players.get(interaction.guildId!)!;
+		const member = interaction.member as GuildMember;
+
+		this.checkVoice(member);
 
 		if (!player.paused && player.playing) {
 			player.pause(true);
@@ -145,6 +140,10 @@ export class MusicCommand extends Subcommand {
 	public async audioVolume(interaction: Subcommand.ChatInputCommandInteraction) {
 		const vol = interaction.options.getInteger('vol', true);
 		const player = this.container.client.manager.players.get(interaction.guildId!)!;
+
+		const member = interaction.member as GuildMember;
+
+		this.checkVoice(member);
 
 		if (player.paused && !player.playing) {
 			return interaction.reply({ content: `The audio player is either ${inlineCode('paused')} or ${inlineCode('stopped')}.` });
@@ -169,10 +168,23 @@ export class MusicCommand extends Subcommand {
 	public async audioDisconnect(interaction: Subcommand.ChatInputCommandInteraction) {
 		const player = this.container.client.manager.players.get(interaction.guildId!)!;
 
+		const member = interaction.member as GuildMember;
+
+		this.checkVoice(member);
+
 		if (player.queue) player.destroy();
 		return interaction.reply({ content: 'Player Stopped', ephemeral: true });
 	}
-	// public async queueList(interaction: Subcommand.ChatInputCommandInteraction) {}
-	// public async queueAdd(interaction: Subcommand.ChatInputCommandInteraction) {}
+	// public async queueList(interaction: Subcommand.ChatInputCommandInteraction) {
+	// 	const player = this.container.client.manager.players.get(interaction.guildId!)!;
+
+
+	// }
+
 	// public async queueRemove(interaction: Subcommand.ChatInputCommandInteraction) {}
+
+	private checkVoice(m: GuildMember) {
+		if (!m.voice.channelId) return 'Please join a voice channel';
+		return;
+	}
 }

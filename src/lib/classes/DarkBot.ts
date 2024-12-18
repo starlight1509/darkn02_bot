@@ -1,5 +1,5 @@
 import configs from '#lib/configs';
-import { SapphireClient, Command } from '@sapphire/framework';
+import { SapphireClient, Command, ChatInputCommand } from '@sapphire/framework';
 import { envParseString } from '@skyra/env-utilities';
 import { ActivityType, Events, Partials, PermissionFlagsBits } from 'discord.js';
 import { Manager, VoiceServer } from 'magmastream';
@@ -47,7 +47,7 @@ export class DarkBot extends SapphireClient {
 
 // Command
 export abstract class DarkCommand extends Command {
-	public constructor(ctx: Command.LoaderContext, options: Command.Options) {
+	public constructor(ctx: ChatInputCommand.LoaderContext, options: ChatInputCommand.Options) {
 		super(ctx, {
 			requiredClientPermissions: PermissionFlagsBits.EmbedLinks,
 			...options
