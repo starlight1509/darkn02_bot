@@ -170,7 +170,7 @@ export class InfoCommand extends Subcommand {
 		return interaction.reply({ embeds: this.embeds });
 	}
 	private getHardwareUsage() {
-		const cpuMap = cpus().map((v, i) => ({ model: v.model, speed: v.speed, cores: i++ })).slice(0, 2);
+		const cpuMap = cpus().map((v, i) => ({ model: v.model, speed: v.speed, cores: i++ })).slice(3);
 		const memUsageTotal = roundNumber(memoryUsage().heapTotal / 1000000);
 		const memUsageUsed = roundNumber(memoryUsage().heapUsed / 1000000);
 
