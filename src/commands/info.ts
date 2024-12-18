@@ -71,11 +71,11 @@ export class InfoCommand extends Subcommand {
 				},
 				{
 					name: 'User Stats',
-					value: `${bold('Joined Discord')}: ${time(member.user.createdTimestamp, TimestampStyles.RelativeTime)}\n${bold('Joined Server')}: ${time(member.joinedTimestamp!, TimestampStyles.RelativeTime)}`
+					value: `${bold('Joined Discord')}: ${time(member.user.createdAt, TimestampStyles.RelativeTime)}\n${bold('Joined Server')}: ${time(member.joinedAt!, TimestampStyles.RelativeTime)}`
 				},
 				{
 					name: 'Other Stats',
-					value: `${bold('Presence/Status')}: ${toTitleCase(member.presence?.status ? 'offline' : 'invisible (offline)')}\n${bold('Role(s)')}: ${member.roles.cache.size}\n${bold('Bot?')} ${(member.user.bot ? member.user.bot : 'Yes', 'No')}`
+					value: `${bold('Presence/Status')}: ${toTitleCase(member.presence!.status)}\n${bold('Role(s)')}: ${member.roles.cache.size}\n${bold('Bot?')} ${(member.user.bot ? member.user.bot : 'Yes', 'No')}`
 				}
 			]
 		});
