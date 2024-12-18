@@ -103,7 +103,7 @@ export class InfoCommand extends Subcommand {
 			fields: [
 				{
 					name: 'General',
-					value: `${bold('Name')}: ${interaction.guild!.name} ${bold('ID')}: ${interaction.guildId!}\n${bold('Owner')}: ${userMention(interaction.guild!.ownerId)}\n${bold('Created In')}: ${time(interaction.guild!.createdAt, TimestampStyles.RelativeTime)}`
+					value: `${bold('Name')}: ${interaction.guild!.name}\n${bold('ID')}: ${interaction.guildId!}\n${bold('Owner')}: ${userMention(interaction.guild!.ownerId)}\n${bold('Created In')}: ${time(interaction.guild!.createdAt, TimestampStyles.RelativeTime)}`
 				},
 				{
 					name: 'Size/Total',
@@ -136,7 +136,7 @@ export class InfoCommand extends Subcommand {
 				},
 				{
 					name: 'Stats',
-					value: `${bold('Uptime')}: ${this.duration.format(this.container.client.uptime!)} | ${time(this.container.client.uptime! / 1000, TimestampStyles.RelativeTime)}\n${bold('Guild(s)')}: ${this.container.client.guilds.cache.size}\n${bold('Channel(s)')}: ${`${this.container.client.channels.cache.size}`}\n${bold('User(s)')}: ${this.container.client.users.cache.size}\n${bold('Ping/Latency')}: Bot: ${roundNumber(Date.now() - interaction.createdTimestamp)}ms | API: ${roundNumber(this.container.client.ws.ping)}ms`
+					value: `${bold('Uptime')}: ${this.duration.format(this.container.client.uptime!)} | ${time((this.container.client.uptime! / 1000 % 60), TimestampStyles.RelativeTime)}\n${bold('Guild(s)')}: ${this.container.client.guilds.cache.size}\n${bold('Channel(s)')}: ${`${this.container.client.channels.cache.size}`}\n${bold('User(s)')}: ${this.container.client.users.cache.size}\n${bold('Ping/Latency')}: Bot: ${roundNumber(Date.now() - interaction.createdTimestamp)}ms | API: ${roundNumber(this.container.client.ws.ping)}ms`
 				},
 				{
 					name: 'Libraries',
@@ -163,7 +163,7 @@ export class InfoCommand extends Subcommand {
 				},
 				{
 					name: 'Other Stats',
-					value: `${bold('Uptime')}: ${time(roundNumber(uptime()), TimestampStyles.RelativeTime)}`
+					value: `${bold('Uptime')}: ${time((uptime() / 1000 * 60), TimestampStyles.RelativeTime)}`
 				}
 			]
 		});
@@ -174,6 +174,6 @@ export class InfoCommand extends Subcommand {
 		const memUsageTotal = roundNumber(memoryUsage().heapTotal / 1000000);
 		const memUsageUsed = roundNumber(memoryUsage().heapUsed / 1000000);
 
-		return `${bold('CPU/Model')}: ${cpuMap[0].model}\n${bold('CPU/Speed')}: ${cpuMap[0].speed}\n${bold('CPU/Core')}: ${cpuMap[0].cores}\n${bold('Mem Usage')}\n- Used: ${memUsageUsed}MB\n- Total: ${memUsageTotal}MB`;
+		return `${bold('CPU/Model')}: ${cpuMap.slice(3).model}\n${bold('CPU/Speed')}: ${cpuMap.slice(3).speed}\n${bold('CPU/Core')}: ${cpuMap.slice(3).cores}\n${bold('Mem Usage')}\n- Used: ${memUsageUsed}MB\n- Total: ${memUsageTotal}MB`;
 	}
 }
