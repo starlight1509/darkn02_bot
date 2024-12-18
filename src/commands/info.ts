@@ -107,7 +107,7 @@ export class InfoCommand extends Subcommand {
 				},
 				{
 					name: 'Size/Total',
-					value: `${bold('Member(s)')}: - All: ${interaction.guild?.members.cache.size} (User(s): ${memberFilter} | Bots: ${botFilter})\n${bold('Channel(s)')}: ${interaction.guild!.channels.cache.size}\n${bold('Role(s)')}: ${interaction.guild!.roles.cache.size}`
+					value: `${bold('Member(s)')}:\n- All: ${interaction.guild?.members.cache.size} (User(s): ${memberFilter} | Bot(s): ${botFilter})\n${bold('Channel(s)')}: ${interaction.guild!.channels.cache.size}\n${bold('Role(s)')}: ${interaction.guild!.roles.cache.size}`
 				},
 				{
 					name: 'Presence/Status',
