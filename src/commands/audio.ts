@@ -1,7 +1,8 @@
 // import { handleChannel } from '#lib/utils';
+import { handleChannel } from '#lib/utils';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Subcommand } from '@sapphire/plugin-subcommands';
-import { GuildMember, inlineCode } from 'discord.js';
+import { GuildMember, inlineCode, TextBasedChannel } from 'discord.js';
 
 @ApplyOptions<Subcommand.Options>({
 	description: 'Music & Audio',
@@ -91,7 +92,7 @@ export class MusicCommand extends Subcommand {
 		const member = interaction.member as GuildMember;
 		const query = interaction.options.getString('query', true);
 
-		this.checkVoice(member);
+		this.checkVoice(member, interaction.channel!);
 
 		const player = this.container.client.manager.create({
 			guild: interaction.guildId!,
@@ -127,7 +128,7 @@ export class MusicCommand extends Subcommand {
 		const player = this.container.client.manager.players.get(interaction.guildId!)!;
 		const member = interaction.member as GuildMember;
 
-		this.checkVoice(member);
+		this.checkVoice(member, interaction.channel!);
 
 		if (!player.paused && player.playing) {
 			player.pause(true);
@@ -143,7 +144,7 @@ export class MusicCommand extends Subcommand {
 
 		const member = interaction.member as GuildMember;
 
-		this.checkVoice(member);
+		this.checkVoice(member, interaction.channel!);
 
 		if (player.paused && !player.playing) {
 			return interaction.reply({ content: `The audio player is either ${inlineCode('paused')} or ${inlineCode('stopped')}.` });
@@ -170,7 +171,7 @@ export class MusicCommand extends Subcommand {
 
 		const member = interaction.member as GuildMember;
 
-		this.checkVoice(member);
+		this.checkVoice(member, interaction.channel!);
 
 		if (player.queue) player.destroy();
 		return interaction.reply({ content: 'Player Stopped', ephemeral: true });
@@ -183,8 +184,8 @@ export class MusicCommand extends Subcommand {
 
 	// public async queueRemove(interaction: Subcommand.ChatInputCommandInteraction) {}
 
-	private checkVoice(m: GuildMember) {
-		if (!m.voice.channelId) return 'Please join a voice channel';
-		return;
+	private checkVoice(member: GuildMember, channel: TextBasedChannel) {
+		if (member.voice.channelId) return;
+		else return handleChannel(channel.id)!.send({ content: 'Please join a voice channel.' });
 	}
 }
