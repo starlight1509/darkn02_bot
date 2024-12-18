@@ -43,7 +43,8 @@ import { GuildMember, inlineCode } from 'discord.js';
 			name: 'stop',
 			chatInputRun: 'audioDisconnect'
 		}
-	]
+	],
+	preconditions: ['GuildVoiceOnly']
 })
 export class MusicCommand extends Subcommand {
 	public override registerApplicationCommands(registry: Subcommand.Registry) {
@@ -96,17 +97,9 @@ export class MusicCommand extends Subcommand {
 		);
 	}
 	public async audioPlay(interaction: Subcommand.ChatInputCommandInteraction) {
-		await interaction.deferReply({ ephemeral: false });
+		await interaction.deferReply({ ephemeral: true });
 		const member = interaction.member as GuildMember;
 		const query = interaction.options.getString('query', true);
-
-		if (!member.voice.channel)
-			await interaction.editReply({
-				content: 'Please join a Voice Channel first.',
-				options: {
-					ephemeral: true
-				}
-			});
 
 		const player = this.container.client.manager.create({
 			guild: interaction.guildId!,
