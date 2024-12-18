@@ -2,7 +2,7 @@ import { embedGen } from '#lib/utils';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Subcommand } from '@sapphire/plugin-subcommands';
 import { DurationFormatter } from '@sapphire/time-utilities';
-import { bold, escapeEscape, GuildMember, hyperlink, time, TimestampStyles, userMention, version as djsVersion } from 'discord.js';
+import { bold, GuildMember, hyperlink, time, TimestampStyles, userMention, version as djsVersion } from 'discord.js';
 import { version as SapphireVersion } from '@sapphire/framework';
 import { arch, cpus, platform, release, uptime, version as kVersion } from 'node:os';
 import { memoryUsage } from 'node:process';
@@ -67,15 +67,15 @@ export class InfoCommand extends Subcommand {
 			fields: [
 				{
 					name: 'Identifier',
-					value: `${bold('Username')}: ${escapeEscape(member.user.tag)} ${bold('User/ID')}: ${member.id}`
+					value: `${bold('Username')}: ${member.user.tag}\n${bold('User/ID')}: ${member.id}`
 				},
 				{
 					name: 'User Stats',
-					value: `${bold('Joined Discord')}: ${escapeEscape(time(member.user.createdTimestamp, TimestampStyles.RelativeTime))} ${bold('Joined Server')}: ${time(member.joinedTimestamp!, TimestampStyles.RelativeTime)}`
+					value: `${bold('Joined Discord')}: ${time(member.user.createdTimestamp, TimestampStyles.RelativeTime)}\n${bold('Joined Server')}: ${time(member.joinedTimestamp!, TimestampStyles.RelativeTime)}`
 				},
 				{
 					name: 'Other Stats',
-					value: `${bold('Presence/Status')}: ${escapeEscape(toTitleCase(member.presence?.status ? 'offline' : 'invisible (offline)'))} ${bold('Role(s)')}: ${escapeEscape(`${member.roles.cache.size}`)} ${bold('Bot?')} ${(member.user.bot ? member.user.bot : 'Yes', 'No')}`
+					value: `${bold('Presence/Status')}: ${toTitleCase(member.presence?.status ? 'offline' : 'invisible (offline)')}\n${bold('Role(s)')}: ${member.roles.cache.size}\n${bold('Bot?')} ${(member.user.bot ? member.user.bot : 'Yes', 'No')}`
 				}
 			]
 		});
@@ -103,19 +103,19 @@ export class InfoCommand extends Subcommand {
 			fields: [
 				{
 					name: 'General',
-					value: `${bold('Name')}: ${escapeEscape(interaction.guild!.name)} ${bold('ID')}: ${escapeEscape(interaction.guildId!)} ${bold('Owner')}: ${escapeEscape(userMention(interaction.guild!.ownerId))} ${bold('Created In')}: ${time(interaction.guild!.createdTimestamp, TimestampStyles.RelativeTime)}`
+					value: `${bold('Name')}: ${interaction.guild!.name} ${bold('ID')}: ${interaction.guildId!} ${bold('Owner')}: ${userMention(interaction.guild!.ownerId)} ${bold('Created In')}: ${time(interaction.guild!.createdTimestamp, TimestampStyles.RelativeTime)}`
 				},
 				{
 					name: 'Size/Total',
-					value: `${bold('Member(s)')}: ${escapeEscape(`- All: ${interaction.guild?.members.cache.size} (User(s): ${memberFilter} | Bots: ${botFilter})`)} ${bold('Channel(s)')}: ${escapeEscape(`${interaction.guild!.channels.cache.size}`)} ${bold('Role(s)')}: ${interaction.guild!.roles.cache.size}`
+					value: `${bold('Member(s)')}: - All: ${interaction.guild?.members.cache.size} (User(s): ${memberFilter} | Bots: ${botFilter})\n${bold('Channel(s)')}: ${interaction.guild!.channels.cache.size}\n${bold('Role(s)')}: ${interaction.guild!.roles.cache.size}`
 				},
 				{
 					name: 'Presence/Status',
-					value: `${bold('Online')}: ${escapeEscape(`${interaction.guild!.presences.cache.filter((p) => p.status === 'online').size}`)} ${bold('Idle')}: ${escapeEscape(`${interaction.guild!.presences.cache.filter((p) => p.status === 'idle').size}`)} ${bold('DND/Do Not Disturb')}: ${escapeEscape(`${interaction.guild!.presences.cache.filter((p) => p.status === 'dnd').size}`)} ${bold('Invisible/Offline')}: ${escapeEscape(`${interaction.guild!.presences.cache.filter((p) => p.status === 'invisible' || p.status === 'offline').size}`)}`
+					value: `${bold('Online')}: ${interaction.guild!.presences.cache.filter((p) => p.status === 'online').size}\n${bold('Idle')}: ${interaction.guild!.presences.cache.filter((p) => p.status === 'idle').size}\n${bold('DND/Do Not Disturb')}: ${interaction.guild!.presences.cache.filter((p) => p.status === 'dnd').size}\n${bold('Invisible/Offline')}: ${interaction.guild!.presences.cache.filter((p) => p.status === 'invisible' || p.status === 'offline').size}`
 				},
 				{
 					name: 'Misc',
-					value: `${bold('Verified?')}: ${escapeEscape(`${(interaction.guild!.verified ? interaction.guild!.verified : 'Yes', 'No')}`)} ${bold('NotSafeForWork (NSFW) Level')}: ${escapeEscape(nsfwLevel[interaction.guild!.nsfwLevel])} ${bold('Explicit Filter')}: ${explicitFilter[interaction.guild!.explicitContentFilter]}`
+					value: `${bold('Verified?')}: ${(interaction.guild!.verified ? interaction.guild!.verified : 'Yes', 'No')}\n${bold('NotSafeForWork (NSFW) Level')}: ${nsfwLevel[interaction.guild!.nsfwLevel]}\n${bold('Explicit Filter')}: ${explicitFilter[interaction.guild!.explicitContentFilter]}`
 				}
 			]
 		});
@@ -126,21 +126,23 @@ export class InfoCommand extends Subcommand {
 		const owner = this.container.client.users.cache.filter((u, _) => u.id).get(process.env['OWNER_ID'])!;
 		const cId = this.container.client.user!.id || process.env['APPLICATION_ID'];
 
+		const roundedUptime = roundNumber(this.container.client.ws.ping);
+
 		this.embeds = embedGen({
 			title: 'Bot Informations',
 			description: `A ${hyperlink('discord.js', 'https://discord.js.org/')} | ${hyperlink('Sapphire Framework', 'https://sapphirejs.dev/')} bot created by ${userMention(owner.id)}`,
 			fields: [
 				{
 					name: 'Identifier',
-					value: `${bold('User/Tag')}: ${escapeEscape(this.container.client.user!.tag)} ${bold('ID')}: ${escapeEscape(cId)} ${bold('Created since')}: ${escapeEscape(time(this.container.client.user!.createdTimestamp, TimestampStyles.RelativeTime))}`
+					value: `${bold('User/Tag')}: ${this.container.client.user!.tag}\n${bold('ID')}: ${cId}\n${bold('Created since')}: ${time(this.container.client.user!.createdTimestamp, TimestampStyles.RelativeTime)}`
 				},
 				{
 					name: 'Stats',
-					value: `${bold('Uptime')}: ${escapeEscape(`${this.duration.format(this.container.client.uptime!)} | ${time(this.container.client.uptime!, TimestampStyles.RelativeTime)}`)} ${bold('Guild(s)')}: ${escapeEscape(`${this.container.client.guilds.cache.size}`)} ${bold('Channel(s)')}: ${escapeEscape(`${this.container.client.channels.cache.size}`)} ${bold('User(s)')}: ${escapeEscape(`${this.container.client.users.cache.size}`)} ${bold('Ping/Latency')}: Bot: ${roundNumber(Date.now() - interaction.createdTimestamp)}ms | API: ${roundNumber(this.container.client.ws.ping)}ms`
+					value: `${bold('Uptime')}:${this.duration.format(this.container.client.uptime!)} | ${time(roundedUptime, TimestampStyles.RelativeTime)} ${bold('Guild(s)')}: ${this.container.client.guilds.cache.size}\n${bold('Channel(s)')}: ${`${this.container.client.channels.cache.size}`} ${bold('User(s)')}: ${this.container.client.users.cache.size}\n${bold('Ping/Latency')}: Bot: ${roundNumber(Date.now() - interaction.createdTimestamp)}ms | API: ${roundNumber(this.container.client.ws.ping)}ms`
 				},
 				{
 					name: 'Libraries',
-					value: `${bold('Nodejs')}: ${escapeEscape(process.version)} ${bold('Discordjs')}: ${escapeEscape(djsVersion)} ${bold('Sapphire Framework')}: ${SapphireVersion}`
+					value: `${bold('Nodejs')}: ${process.version}\n${bold('Discordjs')}: ${djsVersion}\n${bold('Sapphire Framework')}: ${SapphireVersion}`
 				}
 			],
 			thumbnail: {
@@ -155,7 +157,7 @@ export class InfoCommand extends Subcommand {
 			fields: [
 				{
 					name: 'OS Stats',
-					value: `${bold('Distro')}: ${escapeEscape(`${toTitleCase(release())} (${platform()})`)} ${bold('Architecture')}: ${escapeEscape(arch())} ${bold('Kernel Version')}: ${kVersion()}`
+					value: `${bold('Distro')}: ${toTitleCase(release())} (${platform()})\n${bold('Architecture')}: ${arch()}\n${bold('Kernel Version')}: ${kVersion()}`
 				},
 				{
 					name: 'System Stats',
@@ -163,7 +165,7 @@ export class InfoCommand extends Subcommand {
 				},
 				{
 					name: 'Other Stats',
-					value: `${bold('Uptime')}: ${time(uptime(), TimestampStyles.RelativeTime)}`
+					value: `${bold('Uptime')}: ${time(roundNumber(uptime()), TimestampStyles.RelativeTime)}`
 				}
 			]
 		});
@@ -171,15 +173,12 @@ export class InfoCommand extends Subcommand {
 	}
 	private getHardwareUsage() {
 		const cpuMap = cpus()
-			.slice(0, 2)
-			.map(
-				(v, i) =>
-					`${bold('CPU/Model')}: ${escapeEscape(v.model)} ${bold('CPU/Speed')}: ${escapeEscape(`${v.speed}`)} ${bold('CPU/Core(s)')}: ${i}`
-			)
-			.join('');
+			.map((v, i) => `${bold('CPU/Model')}: ${v.model}\n${bold('CPU/Speed')}: ${v.speed}\n${bold('CPU/Core(s)')}: ${i}`)
+			.join('')
+			.slice(2);
 		const memUsageTotal = roundNumber(memoryUsage().heapTotal / 1000000);
 		const memUsageUsed = roundNumber(memoryUsage().heapUsed / 1000000);
 
-		return `${escapeEscape(cpuMap)} ${escapeEscape(bold('Mem Usage'))} - ${bold('Used')}: ${escapeEscape(`${memUsageUsed}`)} - ${bold('Total')}: ${memUsageTotal}`;
+		return `${cpuMap}\n${bold('Mem Usage')}\n- Used: ${memUsageUsed}MB\n- Total: ${memUsageTotal}MB`;
 	}
 }
