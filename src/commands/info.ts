@@ -170,10 +170,9 @@ export class InfoCommand extends Subcommand {
 		return interaction.reply({ embeds: this.embeds });
 	}
 	private getHardwareUsage() {
-		const cpuMap = cpus().map((v, i) => ({ model: v.model, speed: v.speed, cores: i++ })).slice(3);
 		const memUsageTotal = roundNumber(memoryUsage().heapTotal / 1000000);
 		const memUsageUsed = roundNumber(memoryUsage().heapUsed / 1000000);
 
-		return `${bold('CPU/Model')}: ${cpuMap[0].model}\n${bold('CPU/Speed')}: ${cpuMap[0].speed}MHz\n${bold('CPU/Core')}: ${cpuMap[0].cores}\n${bold('Mem Usage')}\n- Used: ${memUsageUsed}MB\n- Total: ${memUsageTotal}MB`;
+		return `${bold('CPU/Model')}: ${cpus()[0].model}\n${bold('CPU/Speed')}: ${cpus()[0].speed}MHz\n${bold('CPU/Core')}: ${cpus().length}\n${bold('Mem Usage')}\n- Used: ${memUsageUsed}MB\n- Total: ${memUsageTotal}MB`;
 	}
 }
