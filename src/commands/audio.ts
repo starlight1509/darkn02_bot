@@ -179,13 +179,12 @@ export class MusicCommand extends Subcommand {
 	// public async queueList(interaction: Subcommand.ChatInputCommandInteraction) {
 	// 	const player = this.container.client.manager.players.get(interaction.guildId!)!;
 
-
 	// }
 
 	// public async queueRemove(interaction: Subcommand.ChatInputCommandInteraction) {}
 
 	private checkVoice(member: GuildMember, channel: TextBasedChannel) {
 		if (member.voice.channelId) return;
-		else return handleChannel(channel.id)!.send({ content: 'Please join a voice channel.' });
+		else return handleChannel(channel.id)!.send({ content: 'Please join a voice channel.', options: { ephemeral: true } });
 	}
 }

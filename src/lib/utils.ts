@@ -20,8 +20,8 @@ export function queueListBuilder(row: ActionRowBuilder, queue: Queue) {
 	const listClose = new ButtonBuilder().setCustomId('list-close').setStyle(ButtonStyle.Danger);
 
 	for (const mapped of queue) {
-		listJump.setOptions({ label: `${mapped.title}`, value: `${queue.length++}` })
-	};
+		listJump.setOptions({ label: `${mapped.title}`, value: `${queue.length++}` });
+	}
 
-	return row = new ActionRowBuilder().addComponents(listBackward, listForward, listClose, listJump);
+	return row.addComponents(listBackward, listForward, listClose, listJump);
 }
