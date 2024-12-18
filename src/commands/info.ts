@@ -126,7 +126,7 @@ export class InfoCommand extends Subcommand {
 		const owner = this.container.client.users.cache.filter((u, _) => u.id).get(process.env['OWNER_ID'])!;
 		const cId = this.container.client.user!.id || process.env['APPLICATION_ID'];
 
-		const roundedUptime = roundNumber(this.container.client.ws.ping);
+		const roundedUptime = roundNumber(this.container.client.uptime!);
 
 		this.embeds = embedGen({
 			title: 'Bot Informations',
@@ -138,7 +138,7 @@ export class InfoCommand extends Subcommand {
 				},
 				{
 					name: 'Stats',
-					value: `${bold('Uptime')}:${this.duration.format(this.container.client.uptime!)} | ${time(roundedUptime, TimestampStyles.RelativeTime)} ${bold('Guild(s)')}: ${this.container.client.guilds.cache.size}\n${bold('Channel(s)')}: ${`${this.container.client.channels.cache.size}`} ${bold('User(s)')}: ${this.container.client.users.cache.size}\n${bold('Ping/Latency')}: Bot: ${roundNumber(Date.now() - interaction.createdTimestamp)}ms | API: ${roundNumber(this.container.client.ws.ping)}ms`
+					value: `${bold('Uptime')}:${this.duration.format(this.container.client.uptime!)} | ${time(roundedUptime, TimestampStyles.RelativeTime)}\n${bold('Guild(s)')}: ${this.container.client.guilds.cache.size}\n${bold('Channel(s)')}: ${`${this.container.client.channels.cache.size}`} ${bold('User(s)')}: ${this.container.client.users.cache.size}\n${bold('Ping/Latency')}: Bot: ${roundNumber(Date.now() - interaction.createdTimestamp)}ms | API: ${roundNumber(this.container.client.ws.ping)}ms`
 				},
 				{
 					name: 'Libraries',
