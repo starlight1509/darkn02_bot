@@ -103,7 +103,7 @@ export class InfoCommand extends Subcommand {
 			fields: [
 				{
 					name: 'General',
-					value: `${bold('Name')}: ${interaction.guild!.name} ${bold('ID')}: ${interaction.guildId!} ${bold('Owner')}: ${userMention(interaction.guild!.ownerId)} ${bold('Created In')}: ${time(interaction.guild!.createdTimestamp, TimestampStyles.RelativeTime)}`
+					value: `${bold('Name')}: ${interaction.guild!.name} ${bold('ID')}: ${interaction.guildId!}\n${bold('Owner')}: ${userMention(interaction.guild!.ownerId)}\n${bold('Created In')}: ${time(interaction.guild!.createdAt, TimestampStyles.RelativeTime)}`
 				},
 				{
 					name: 'Size/Total',
@@ -126,19 +126,17 @@ export class InfoCommand extends Subcommand {
 		const owner = this.container.client.users.cache.filter((u, _) => u.id).get(process.env['OWNER_ID'])!;
 		const cId = this.container.client.user!.id || process.env['APPLICATION_ID'];
 
-		const roundedUptime = roundNumber(this.container.client.uptime!);
-
 		this.embeds = embedGen({
 			title: 'Bot Informations',
 			description: `A ${hyperlink('discord.js', 'https://discord.js.org/')} | ${hyperlink('Sapphire Framework', 'https://sapphirejs.dev/')} bot created by ${userMention(owner.id)}`,
 			fields: [
 				{
 					name: 'Identifier',
-					value: `${bold('User/Tag')}: ${this.container.client.user!.tag}\n${bold('ID')}: ${cId}\n${bold('Created since')}: ${time(this.container.client.user!.createdTimestamp, TimestampStyles.RelativeTime)}`
+					value: `${bold('User/Tag')}: ${this.container.client.user!.tag}\n${bold('ID')}: ${cId}\n${bold('Created since')}: ${time(this.container.client.user!.createdAt, TimestampStyles.RelativeTime)}`
 				},
 				{
 					name: 'Stats',
-					value: `${bold('Uptime')}:${this.duration.format(this.container.client.uptime!)} | ${time(roundedUptime, TimestampStyles.RelativeTime)}\n${bold('Guild(s)')}: ${this.container.client.guilds.cache.size}\n${bold('Channel(s)')}: ${`${this.container.client.channels.cache.size}`}\n${bold('User(s)')}: ${this.container.client.users.cache.size}\n${bold('Ping/Latency')}: Bot: ${roundNumber(Date.now() - interaction.createdTimestamp)}ms | API: ${roundNumber(this.container.client.ws.ping)}ms`
+					value: `${bold('Uptime')}: ${this.duration.format(this.container.client.uptime!)} | ${time(this.container.client.uptime! / 1000, TimestampStyles.RelativeTime)}\n${bold('Guild(s)')}: ${this.container.client.guilds.cache.size}\n${bold('Channel(s)')}: ${`${this.container.client.channels.cache.size}`}\n${bold('User(s)')}: ${this.container.client.users.cache.size}\n${bold('Ping/Latency')}: Bot: ${roundNumber(Date.now() - interaction.createdTimestamp)}ms | API: ${roundNumber(this.container.client.ws.ping)}ms`
 				},
 				{
 					name: 'Libraries',
@@ -172,13 +170,10 @@ export class InfoCommand extends Subcommand {
 		return interaction.reply({ embeds: this.embeds });
 	}
 	private getHardwareUsage() {
-		const cpuMap = cpus()
-			.map((v, i) => `${bold('CPU/Model')}: ${v.model}\n${bold('CPU/Speed')}: ${v.speed}\n${bold('CPU/Core(s)')}: ${i}`)
-			.join('')
-			.slice(2);
+		const cpuMap = cpus().map((v, i) => ({ model: v.model, speed: v.speed, cores: i++ }));
 		const memUsageTotal = roundNumber(memoryUsage().heapTotal / 1000000);
 		const memUsageUsed = roundNumber(memoryUsage().heapUsed / 1000000);
 
-		return `${cpuMap}\n${bold('Mem Usage')}\n- Used: ${memUsageUsed}MB\n- Total: ${memUsageTotal}MB`;
+		return `${bold('CPU/Model')}: ${cpuMap[0].model}\n${bold('CPU/Speed')}: ${cpuMap[0].speed}\n${bold('CPU/Core')}: ${cpuMap[0].cores}\n${bold('Mem Usage')}\n- Used: ${memUsageUsed}MB\n- Total: ${memUsageTotal}MB`;
 	}
 }
