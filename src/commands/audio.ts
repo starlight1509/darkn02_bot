@@ -87,11 +87,10 @@ export class MusicCommand extends Subcommand {
 		);
 	}
 	public async audioPlay(interaction: Subcommand.ChatInputCommandInteraction) {
-		await interaction.deferReply();
 		const member = interaction.member as GuildMember;
 		const query = interaction.options.getString('query', true);
 
-		this.checkVoice(member, interaction);
+		await this.checkVoice(member, interaction);
 
 		const player = this.container.client.manager.create({
 			guild: interaction.guildId!,
@@ -127,14 +126,14 @@ export class MusicCommand extends Subcommand {
 		const player = this.container.client.manager.players.get(interaction.guildId!)!;
 		const member = interaction.member as GuildMember;
 
-		this.checkVoice(member, interaction);
+		await this.checkVoice(member, interaction);
 
 		if (!player.paused && player.playing) {
 			player.pause(true);
-			return interaction.reply({ content: 'Paused', ephemeral: true });
+			return interaction.editReply({ content: 'Paused', ephemeral: true });
 		} else {
 			player.pause(false);
-			return interaction.reply({ content: 'Resumed', ephemeral: true });
+			return interaction.editReply({ content: 'Resumed', ephemeral: true });
 		}
 	}
 	public async audioVolume(interaction: Subcommand.ChatInputCommandInteraction) {
@@ -145,10 +144,10 @@ export class MusicCommand extends Subcommand {
 		await this.checkVoice(member, interaction);
 
 		if (player.paused && !player.playing) {
-			return interaction.reply({ content: `The audio player is either ${inlineCode('paused')} or ${inlineCode('stopped')}.` });
+			return interaction.editReply({ content: `The audio player is either ${inlineCode('paused')} or ${inlineCode('stopped')}.` });
 		} else {
 			player.setVolume(vol);
-			return interaction.reply({ content: `The volume has changed to ${inlineCode(`${vol}%`)}.` });
+			return interaction.editReply({ content: `The volume has changed to ${inlineCode(`${vol}%`)}.` });
 		}
 	}
 	public async audioSkip(interaction: Subcommand.ChatInputCommandInteraction) {
@@ -173,7 +172,7 @@ export class MusicCommand extends Subcommand {
 		await this.checkVoice(member, interaction);
 
 		if (player.queue) player.destroy();
-		return interaction.reply({ content: 'Player Stopped', ephemeral: true });
+		return interaction.editReply({ content: 'Player Stopped', ephemeral: true });
 	}
 	// public async queueList(interaction: Subcommand.ChatInputCommandInteraction) {
 	// 	const player = this.container.client.manager.players.get(interaction.guildId!)!;
@@ -182,9 +181,9 @@ export class MusicCommand extends Subcommand {
 
 	// public async queueRemove(interaction: Subcommand.ChatInputCommandInteraction) {}
 
-	private async checkVoice(member: GuildMember, _: Subcommand.ChatInputCommandInteraction) {
-		await _.deferReply();
+	private async checkVoice(member: GuildMember, interaction: Subcommand.ChatInputCommandInteraction) {
+		await interaction.deferReply();
 		if (member.voice.channelId) return;
-		else return _.editReply({ content: 'Please join a voice channel.', options: { ephemeral: true } });
+		else return interaction.editReply({ content: 'Please join a voice channel.', options: { ephemeral: true } });
 	}
 }
