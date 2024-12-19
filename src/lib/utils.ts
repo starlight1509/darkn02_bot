@@ -1,5 +1,16 @@
 import { container } from '@sapphire/framework';
-import { ActionRowBuilder, APIEmbed, ButtonBuilder, ButtonStyle, Colors, EmbedBuilder, Snowflake, StringSelectMenuBuilder } from 'discord.js';
+import {
+	ActionRowBuilder,
+	APIEmbed,
+	ButtonBuilder,
+	ButtonStyle,
+	Colors,
+	CommandInteraction,
+	EmbedBuilder,
+	GuildMember,
+	Snowflake,
+	StringSelectMenuBuilder
+} from 'discord.js';
 import { isTextChannel } from '@sapphire/discord.js-utilities';
 import { Queue } from 'magmastream';
 
@@ -20,8 +31,13 @@ export function queueListBuilder(row: ActionRowBuilder, queue: Queue) {
 	const listClose = new ButtonBuilder().setCustomId('list-close').setStyle(ButtonStyle.Danger);
 
 	for (const mapped of queue) {
-		listJump.setOptions({ label: `${mapped.title}`, value: `${queue.length++}` });
+		listJump.setOptions({ label: `${mapped.title}`, value: `${queue.size}` });
 	}
 
 	return row.addComponents(listBackward, listForward, listClose, listJump);
+}
+
+export function checkVoice(member: GuildMember, interaction: CommandInteraction) {
+	if (member.voice.channelId) return;
+	else return interaction.reply({ content: 'Please join a voice channel.', options: { ephemeral: true } });
 }

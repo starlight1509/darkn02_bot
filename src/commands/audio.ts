@@ -1,4 +1,5 @@
 // import { handleChannel } from '#lib/utils';
+import { checkVoice } from '#lib/utils';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Subcommand } from '@sapphire/plugin-subcommands';
 import { GuildMember, inlineCode } from 'discord.js';
@@ -91,7 +92,7 @@ export class MusicCommand extends Subcommand {
 		const member = interaction.member as GuildMember;
 		const query = interaction.options.getString('query', true);
 
-		await this.checkVoice(member, interaction);
+		await checkVoice(member, interaction);
 
 		const player = this.container.client.manager.create({
 			guild: interaction.guildId!,
@@ -127,7 +128,7 @@ export class MusicCommand extends Subcommand {
 		const player = this.container.client.manager.players.get(interaction.guildId!)!;
 		const member = interaction.member as GuildMember;
 
-		await this.checkVoice(member, interaction);
+		await checkVoice(member, interaction);
 
 		if (!player.paused && player.playing) {
 			player.pause(true);
@@ -142,9 +143,9 @@ export class MusicCommand extends Subcommand {
 		const player = this.container.client.manager.players.get(interaction.guildId!)!;
 		const member = interaction.member as GuildMember;
 
-		await this.checkVoice(member, interaction);
+		await checkVoice(member, interaction);
 
-		if (player.paused && !player.playing) {
+		if (player.paused && !player.playing && !player.queue.size) {
 			return interaction.reply({ content: `The audio player is either ${inlineCode('paused')} or ${inlineCode('stopped')}.` });
 		} else {
 			player.setVolume(vol);
@@ -156,21 +157,23 @@ export class MusicCommand extends Subcommand {
 		const id = interaction.options.getInteger('id');
 		const member = interaction.member as GuildMember;
 
-		await this.checkVoice(member, interaction);
+		await checkVoice(member, interaction);
+
+		if (player.queue.size < id! || player.queue.size < 0) interaction.reply({ content: "There's no song left after the current song" });
 
 		if (id) {
 			player.stop(id);
-			await interaction.reply({ content: `Skipped to song id ${id}` });
+			return interaction.reply({ content: `Skipped to song id ${id}` });
 		} else {
 			player.stop();
-			await interaction.reply({ content: 'Song skipped' });
+			return interaction.reply({ content: 'Song skipped' });
 		}
 	}
 	public async audioDisconnect(interaction: Subcommand.ChatInputCommandInteraction) {
 		const player = this.container.client.manager.players.get(interaction.guildId!)!;
 		const member = interaction.member as GuildMember;
 
-		await this.checkVoice(member, interaction);
+		await checkVoice(member, interaction);
 
 		if (player.queue) player.destroy();
 		return interaction.reply({ content: 'Player Stopped', ephemeral: true });
@@ -181,9 +184,4 @@ export class MusicCommand extends Subcommand {
 	// }
 
 	// public async queueRemove(interaction: Subcommand.ChatInputCommandInteraction) {}
-
-	private async checkVoice(member: GuildMember, interaction: Subcommand.ChatInputCommandInteraction) {
-		if (member.voice.channelId) return;
-		else return interaction.reply({ content: 'Please join a voice channel.', options: { ephemeral: true } });
-	}
 }
