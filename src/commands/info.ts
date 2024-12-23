@@ -61,11 +61,14 @@ export class InfoCommand extends Subcommand {
 	public async userInfo(interaction: Subcommand.ChatInputCommandInteraction) {
 		const member = (interaction.options.getMember('tag') as GuildMember) ?? interaction.member;
 
-		const act = member.presence?.activities.map((v) => v.name).slice(0).join('');
+		const act = member.presence!.activities.map((v, i, a) => {
+			if (a.length == i || !a) return;
+			else return a[i].name = `\n- ${v.name}`;
+		});
 
 		this.embeds = embedGen({
 			title: 'User Informations',
-			description: `Current Activity: ${act || 'None'}`,
+			description: `Current Activity: ${act.join(' ') || 'None'}`,
 			fields: [
 				{
 					name: 'Identifier',
