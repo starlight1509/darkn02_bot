@@ -127,7 +127,7 @@ export class InfoCommand extends Subcommand {
 		return interaction.reply({ embeds: this.embeds });
 	}
 	public async botInfo(interaction: Subcommand.ChatInputCommandInteraction) {
-		const owner = this.container.client.users.cache.filter((u, _) => u.id).get(process.env['OWNER_ID'])!;
+		const owner = this.container.client.users.cache.get(process.env['OWNER_ID'])!;
 		const cId = this.container.client.user!.id || process.env['APPLICATION_ID'];
 
 		this.embeds = embedGen({
