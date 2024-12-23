@@ -36,7 +36,7 @@ import { toTitleCase, roundNumber } from '@sapphire/utilities';
 	]
 })
 export class InfoCommand extends Subcommand {
-	private embeds = embedGen();
+	#embeds = embedGen();
 	private duration = new DurationFormatter();
 	public override registerApplicationCommands(registry: Subcommand.Registry) {
 		registry.registerChatInputCommand((builder) =>
@@ -62,12 +62,9 @@ export class InfoCommand extends Subcommand {
 	public async userInfo(interaction: Subcommand.ChatInputCommandInteraction) {
 		const member = (interaction.options.getMember('tag') as GuildMember) ?? interaction.member;
 
-		for (const act of member.presence!.activities) {
-			if (act) this.embeds = embedGen({ description: `Current Status: ${act.name}` });
-		}
-
-		this.embeds = embedGen({
+		this.#embeds = embedGen({
 			title: 'User Informations',
+			description: `Current Activity: ${member.presence!.activities[0].name ?? 'None'}`,
 			fields: [
 				{
 					name: 'Identifier',
@@ -83,7 +80,8 @@ export class InfoCommand extends Subcommand {
 				}
 			]
 		});
-		return interaction.reply({ embeds: this.embeds });
+
+		return interaction.reply({ embeds: this.#embeds });
 	}
 	public async serverInfo(interaction: Subcommand.ChatInputCommandInteraction) {
 		const memberFilter = interaction.guild!.members.cache.filter((m) => !m.user.bot).size;
@@ -102,7 +100,7 @@ export class InfoCommand extends Subcommand {
 			2: 'All Member(s)'
 		};
 
-		this.embeds = embedGen({
+		this.#embeds = embedGen({
 			title: 'Server Informations',
 			fields: [
 				{
@@ -124,13 +122,13 @@ export class InfoCommand extends Subcommand {
 			]
 		});
 
-		return interaction.reply({ embeds: this.embeds });
+		return interaction.reply({ embeds: this.#embeds });
 	}
 	public async botInfo(interaction: Subcommand.ChatInputCommandInteraction) {
 		const owner = this.container.client.users.cache.get(process.env['OWNER_ID'])!;
 		const cId = this.container.client.user!.id || process.env['APPLICATION_ID'];
 
-		this.embeds = embedGen({
+		this.#embeds = embedGen({
 			title: 'Bot Informations',
 			description: `A ${hyperlink('discord.js', 'https://discord.js.org/')} | ${hyperlink('Sapphire Framework', 'https://sapphirejs.dev/')} bot created by ${userMention(owner.id)}`,
 			fields: [
@@ -151,10 +149,10 @@ export class InfoCommand extends Subcommand {
 				url: this.container.client.user?.avatarURL({ forceStatic: false }) ? '' : ''
 			}
 		});
-		return interaction.reply({ embeds: this.embeds });
+		return interaction.reply({ embeds: this.#embeds });
 	}
 	public async sysInfo(interaction: Subcommand.ChatInputCommandInteraction) {
-		this.embeds = embedGen({
+		this.#embeds = embedGen({
 			title: 'System Informations',
 			fields: [
 				{
@@ -171,7 +169,7 @@ export class InfoCommand extends Subcommand {
 				}
 			]
 		});
-		return interaction.reply({ embeds: this.embeds });
+		return interaction.reply({ embeds: this.#embeds });
 	}
 	private getHardwareUsage() {
 		const memUsageTotal = roundNumber(memoryUsage().heapTotal / 1000000);
