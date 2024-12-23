@@ -4,8 +4,7 @@ import { Subcommand } from '@sapphire/plugin-subcommands';
 import { DurationFormatter } from '@sapphire/time-utilities';
 import { bold, GuildMember, hyperlink, time, TimestampStyles, userMention, version as djsVersion } from 'discord.js';
 import { version as SapphireVersion } from '@sapphire/framework';
-import { arch, cpus, platform, release, uptime, version as kVersion } from 'node:os';
-import { memoryUsage } from 'node:process';
+import { arch, cpus, release, uptime, freemem, totalmem, type } from 'node:os';
 import { toTitleCase, roundNumber } from '@sapphire/utilities';
 
 @ApplyOptions<Subcommand.Options>({
@@ -62,13 +61,15 @@ export class InfoCommand extends Subcommand {
 	public async userInfo(interaction: Subcommand.ChatInputCommandInteraction) {
 		const member = (interaction.options.getMember('tag') as GuildMember) ?? interaction.member;
 
+		const act = member.presence?.activities.map((v) => v.name).slice(0).join('');
+
 		this.embeds = embedGen({
 			title: 'User Informations',
-			description: `Current Activity: ${member.presence!.activities[0].name ? null : 'None'}`,
+			description: `Current Activity: ${act || 'None'}`,
 			fields: [
 				{
 					name: 'Identifier',
-					value: `${bold('Username')}: ${member.user.tag}\n${bold('User/ID')}: ${member.id}`
+					value: `${bold('Username')}: ${member.user.tag} | ${userMention(member.id)}\n${bold('User/ID')}: ${member.id}`
 				},
 				{
 					name: 'User Stats',
@@ -80,7 +81,7 @@ export class InfoCommand extends Subcommand {
 				}
 			],
 			thumbnail: {
-				url: member.user.displayAvatarURL({ size: 1024 }) ? '' : ''
+				url: member.user.displayAvatarURL({ size: 1024 })
 			}
 		});
 
@@ -124,7 +125,7 @@ export class InfoCommand extends Subcommand {
 				}
 			],
 			thumbnail: {
-				url: interaction.guild?.iconURL({ size: 1024 }) ? '' : ''
+				url: interaction.guild!.iconURL({ size: 1024 })!
 			}
 		});
 
@@ -144,7 +145,7 @@ export class InfoCommand extends Subcommand {
 				},
 				{
 					name: 'Stats',
-					value: `${bold('Uptime')}: ${this.duration.format(this.container.client.uptime!)}\n${bold('Guild(s)')}: ${this.container.client.guilds.cache.size}\n${bold('Channel(s)')}: ${`${this.container.client.channels.cache.size}`}\n${bold('User(s)')}: ${this.container.client.users.cache.size}\n${bold('Ping/Latency')}: Bot: ${roundNumber(Date.now() - interaction.createdTimestamp)}ms | API: ${roundNumber(this.container.client.ws.ping)}ms`
+					value: `${bold('Uptime')}: ${this.duration.format(this.container.client.uptime!)}\n${bold('Guild(s)')}: ${this.container.client.guilds.cache.size}\n${bold('Channel(s)')}: ${`${this.container.client.channels.cache.size}`}\n${bold('User(s)')}: ${this.container.client.users.cache.size}\n${bold('Ping/Latency')}: Bot: ${roundNumber(interaction.createdAt.getSeconds())}ms | API: ${roundNumber(this.container.client.ws.ping)}ms`
 				},
 				{
 					name: 'Libraries',
@@ -152,7 +153,7 @@ export class InfoCommand extends Subcommand {
 				}
 			],
 			thumbnail: {
-				url: this.container.client.user?.displayAvatarURL({ size: 1024 }) ? '' : ''
+				url: this.container.client.user!.displayAvatarURL({ size: 1024 })
 			}
 		});
 		return interaction.reply({ embeds: this.embeds });
@@ -163,7 +164,7 @@ export class InfoCommand extends Subcommand {
 			fields: [
 				{
 					name: 'OS Stats',
-					value: `${bold('Distro')}: ${toTitleCase(release())} (${platform()})\n${bold('Architecture')}: ${arch()}\n${bold('Kernel Version')}: ${kVersion()}`
+					value: `${bold('System')}: ${toTitleCase(release())} (${type()})\n${bold('Architecture')}: ${arch()}`
 				},
 				{
 					name: 'System Stats',
@@ -171,16 +172,16 @@ export class InfoCommand extends Subcommand {
 				},
 				{
 					name: 'Other Stats',
-					value: `${bold('Uptime')}: ${this.duration.format(uptime())}`
+					value: `${bold('Uptime')}: ${this.duration.format(uptime() * 1000)}`
 				}
 			]
 		});
 		return interaction.reply({ embeds: this.embeds });
 	}
 	private getHardwareUsage() {
-		const memUsageTotal = roundNumber(memoryUsage().heapTotal / 1000000);
-		const memUsageUsed = roundNumber(memoryUsage().heapUsed / 1000000);
+		const memUsageTotal = roundNumber(totalmem() / 1048576);
+		const memUsageFree = roundNumber(freemem() / 1048576);
 
-		return `${bold('CPU/Model')}: ${cpus()[0].model}\n${bold('CPU/Speed')}: ${cpus()[0].speed}MHz\n${bold('CPU/Core')}: ${cpus().length}\n${bold('Mem Usage')}\n- Used: ${memUsageUsed}MB\n- Total: ${memUsageTotal}MB`;
+		return `${bold('CPU/Model')}: ${cpus()[0].model}\n${bold('CPU/Speed')}: ${cpus()[0].speed}MHz\n${bold('CPU/Core')}: ${cpus().length}\n${bold('Mem Usage')}\n- Free: ${memUsageFree}MB\n- Total: ${memUsageTotal}MB`;
 	}
 }
