@@ -64,7 +64,7 @@ export class InfoCommand extends Subcommand {
 
 		this.embeds = embedGen({
 			title: 'User Informations',
-			description: `Current Activity: ${member.presence!.activities[0].name ?? 'None'}`,
+			description: `Current Activity: ${member.presence!.activities[0].name ? null : 'None'}`,
 			fields: [
 				{
 					name: 'Identifier',
@@ -78,7 +78,10 @@ export class InfoCommand extends Subcommand {
 					name: 'Other Stats',
 					value: `${bold('Presence/Status')}: ${toTitleCase(member.presence!.status)}\n${bold('Role(s)')}: ${member.roles.cache.size}\n${bold('Bot?')} ${(member.user.bot ? member.user.bot : 'Yes', 'No')}`
 				}
-			]
+			],
+			thumbnail: {
+				url: member.user.displayAvatarURL({ size: 1024 }) ? '' : ''
+			}
 		});
 
 		return interaction.reply({ embeds: this.embeds });
@@ -119,7 +122,10 @@ export class InfoCommand extends Subcommand {
 					name: 'Misc',
 					value: `${bold('Verified?')}: ${(interaction.guild!.verified ? interaction.guild!.verified : 'Yes', 'No')}\n${bold('NotSafeForWork (NSFW) Level')}: ${nsfwLevel[interaction.guild!.nsfwLevel]}\n${bold('Explicit Filter')}: ${explicitFilter[interaction.guild!.explicitContentFilter]}`
 				}
-			]
+			],
+			thumbnail: {
+				url: interaction.guild?.iconURL({ size: 1024 }) ? '' : ''
+			}
 		});
 
 		return interaction.reply({ embeds: this.embeds });
@@ -146,7 +152,7 @@ export class InfoCommand extends Subcommand {
 				}
 			],
 			thumbnail: {
-				url: this.container.client.user?.avatarURL({ forceStatic: false }) ? '' : ''
+				url: this.container.client.user?.displayAvatarURL({ size: 1024 }) ? '' : ''
 			}
 		});
 		return interaction.reply({ embeds: this.embeds });
