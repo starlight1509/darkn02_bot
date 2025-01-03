@@ -63,7 +63,7 @@ export class InfoCommand extends Subcommand {
 
 		const act = member.presence!.activities.map((v, i, a) => {
 			if (a.length == i || !a) return;
-			else return a[i].name = `- ${v.name}`;
+			else return a[i].name = `\n- ${v.name}`;
 		});
 
 		this.embeds = embedGen({
