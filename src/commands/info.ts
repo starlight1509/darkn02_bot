@@ -63,12 +63,12 @@ export class InfoCommand extends Subcommand {
 
 		const act = member.presence!.activities.map((v, i, a) => {
 			if (a.length == i || !a) return;
-			else return a[i].name = `\n- ${v.name}`;
+			else return a[i].name = `- ${v.name}`;
 		});
 
 		this.embeds = embedGen({
 			title: 'User Informations',
-			description: `Current Activity: ${act.join(' ') || 'None'}`,
+			description: `Current Activity: ${act.join('\n') || 'None'}`,
 			fields: [
 				{
 					name: 'Identifier',
