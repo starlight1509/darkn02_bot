@@ -70,7 +70,7 @@ export class MusicCommand extends N02Subcommand {
 								.setName('remove')
 								.setDescription('Remove song from queue')
 								.addIntegerOption((input) =>
-									input.setName('id').setDescription('Song ID to remove').setAutocomplete(true).setRequired(true).setMaxValue(25)
+									input.setName('id').setDescription('Song ID to remove').setRequired(true).setMaxValue(25)
 								)
 						)
 				)
