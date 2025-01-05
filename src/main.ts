@@ -1,7 +1,7 @@
 import '#lib/setup';
-import { DarkBot } from '#lib/classes/DarkBot';
+import { N02Client } from '#lib/classes/N02Client';
 
-const client = new DarkBot();
+const client = new N02Client();
 
 void (async () => {
 	try {

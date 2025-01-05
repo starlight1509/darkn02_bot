@@ -1,4 +1,4 @@
-import { handleChannel } from '#lib/utils';
+import { handleChannel } from '#lib/utils/userUtils';
 import { ApplyOptions } from '@sapphire/decorators';
 import { container, Listener } from '@sapphire/framework';
 import { Player } from 'magmastream';

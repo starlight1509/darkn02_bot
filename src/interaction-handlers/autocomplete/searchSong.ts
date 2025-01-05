@@ -11,11 +11,7 @@ export class AutocompleteHandler extends InteractionHandler {
 		return interaction.respond(result);
 	}
 	public override async parse(interaction: AutocompleteInteraction) {
-		if (
-			interaction.commandName !== 'audio' || //
-			interaction.options.getSubcommand() !== 'play'
-		)
-			return this.none();
+		if (interaction.commandName !== 'audio' && interaction.options.getSubcommand() !== 'play') return this.none();
 
 		const focused = interaction.options.getFocused(true);
 

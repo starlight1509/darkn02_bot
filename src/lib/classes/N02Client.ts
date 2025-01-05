@@ -1,11 +1,10 @@
 import configs from '#lib/configs';
-import { SapphireClient, Command } from '@sapphire/framework';
+import { SapphireClient } from '@sapphire/framework';
 import { envParseString } from '@skyra/env-utilities';
-import { ActivityType, Events, Partials, PermissionFlagsBits } from 'discord.js';
+import { ActivityType, Events, Partials } from 'discord.js';
 import { Manager, VoiceServer } from 'magmastream';
 
-// Client
-export class DarkBot extends SapphireClient {
+export class N02Client extends SapphireClient {
 	public constructor() {
 		super({
 			intents: configs.client.intents,
@@ -41,16 +40,6 @@ export class DarkBot extends SapphireClient {
 
 		this.on(Events.Raw, (d) => {
 			this.manager.updateVoiceState(d as VoiceServer);
-		});
-	}
-}
-
-// Command
-export abstract class DarkCommand extends Command {
-	public constructor(ctx: Command.LoaderContext, options: Command.Options) {
-		super(ctx, {
-			requiredClientPermissions: PermissionFlagsBits.EmbedLinks,
-			...options
 		});
 	}
 }

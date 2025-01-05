@@ -1,4 +1,4 @@
-import { embedGen } from '#lib/utils';
+import { embedGen } from '#lib/utils/userUtils';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Subcommand } from '@sapphire/plugin-subcommands';
 import { DurationFormatter } from '@sapphire/time-utilities';
@@ -6,6 +6,7 @@ import { bold, GuildMember, hyperlink, time, TimestampStyles, userMention, versi
 import { version as SapphireVersion } from '@sapphire/framework';
 import { arch, cpus, release, uptime, freemem, totalmem, type } from 'node:os';
 import { toTitleCase, roundNumber } from '@sapphire/utilities';
+import { N02Subcommand } from '#lib/classes/N02Command';
 
 @ApplyOptions<Subcommand.Options>({
 	description: 'Informations',
@@ -34,7 +35,7 @@ import { toTitleCase, roundNumber } from '@sapphire/utilities';
 		}
 	]
 })
-export class InfoCommand extends Subcommand {
+export class InfoCommand extends N02Subcommand {
 	private embeds = embedGen();
 	private duration = new DurationFormatter();
 	public override registerApplicationCommands(registry: Subcommand.Registry) {
@@ -84,7 +85,7 @@ export class InfoCommand extends Subcommand {
 			}
 		});
 
-		return interaction.reply({ embeds: this.embeds });
+		return interaction.reply({ embeds: [this.embeds] });
 	}
 	public async serverInfo(interaction: Subcommand.ChatInputCommandInteraction) {
 		const memberFilter = interaction.guild!.members.cache.filter((m) => !m.user.bot).size;
@@ -128,7 +129,7 @@ export class InfoCommand extends Subcommand {
 			}
 		});
 
-		return interaction.reply({ embeds: this.embeds });
+		return interaction.reply({ embeds: [this.embeds] });
 	}
 	public async botInfo(interaction: Subcommand.ChatInputCommandInteraction) {
 		const owner = this.container.client.users.cache.get(process.env['OWNER_ID'])!;
@@ -155,7 +156,7 @@ export class InfoCommand extends Subcommand {
 				url: this.container.client.user!.displayAvatarURL({ size: 1024 })
 			}
 		});
-		return interaction.reply({ embeds: this.embeds });
+		return interaction.reply({ embeds: [this.embeds] });
 	}
 	public async sysInfo(interaction: Subcommand.ChatInputCommandInteraction) {
 		this.embeds = embedGen({
@@ -175,7 +176,7 @@ export class InfoCommand extends Subcommand {
 				}
 			]
 		});
-		return interaction.reply({ embeds: this.embeds });
+		return interaction.reply({ embeds: [this.embeds] });
 	}
 	private getHardwareUsage() {
 		const memUsageTotal = roundNumber(totalmem() / 1048576);

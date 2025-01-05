@@ -1,5 +1,5 @@
-// import { handleChannel } from '#lib/utils';
-import { checkVoice } from '#lib/utils';
+import { N02Subcommand } from '#lib/classes/N02Command';
+import { checkVoice } from '#lib/utils/userUtils';
 import { ApplyOptions } from '@sapphire/decorators';
 import { Subcommand } from '@sapphire/plugin-subcommands';
 import { GuildMember, inlineCode } from 'discord.js';
@@ -21,17 +21,7 @@ import { GuildMember, inlineCode } from 'discord.js';
 		},
 		{
 			name: 'queue',
-			type: 'group',
-			entries: [
-				{
-					name: 'list',
-					chatInputRun: 'queueList'
-				},
-				{
-					name: 'remove',
-					chatInputRun: 'queueRemove'
-				}
-			]
+			chatInputRun: 'audioQueue'
 		},
 		{
 			name: 'volume',
@@ -43,7 +33,7 @@ import { GuildMember, inlineCode } from 'discord.js';
 		}
 	]
 })
-export class MusicCommand extends Subcommand {
+export class MusicCommand extends N02Subcommand {
 	public override registerApplicationCommands(registry: Subcommand.Registry) {
 		registry.registerChatInputCommand((builder) =>
 			builder
@@ -75,7 +65,6 @@ export class MusicCommand extends Subcommand {
 					group
 						.setName('queue')
 						.setDescription('Music Queue')
-						.addSubcommand((command) => command.setName('list').setDescription('Queue List'))
 						.addSubcommand((command) =>
 							command
 								.setName('remove')
@@ -161,13 +150,18 @@ export class MusicCommand extends Subcommand {
 
 		if (player.queue.size < id! || player.queue.size < 0) interaction.reply({ content: "There's no song left after the current song" });
 
-		if (id) {
-			player.stop(id);
-			return interaction.reply({ content: `Skipped to song id ${id}` });
-		} else {
-			player.stop();
-			return interaction.reply({ content: 'Song skipped' });
-		}
+		if (id && (id < 1 || id > player.queue.size)) {
+			return interaction.reply({ content: "Invalid song ID.", ephemeral: true });
+		  }
+
+		  player.stop();
+
+		  if (id) {
+			player.stop(id - 1);
+			return interaction.reply({ content: `Skipped to song id ${id}`, ephemeral: true });
+		  } else {
+			return interaction.reply({ content: 'Song skipped', ephemeral: true });
+		  }
 	}
 	public async audioDisconnect(interaction: Subcommand.ChatInputCommandInteraction) {
 		const player = this.container.client.manager.players.get(interaction.guildId!)!;
@@ -175,13 +169,24 @@ export class MusicCommand extends Subcommand {
 
 		await checkVoice(member, interaction);
 
-		if (player.queue) player.destroy();
+		if (player) player.destroy();
+		else interaction.reply({ content: 'The queue is empty.' });
+
 		return interaction.reply({ content: 'Player Stopped', ephemeral: true });
 	}
-	// public async queueList(interaction: Subcommand.ChatInputCommandInteraction) {
-	// 	const player = this.container.client.manager.players.get(interaction.guildId!)!;
+	public async queueRemove(interaction: Subcommand.ChatInputCommandInteraction) {
+		const player = this.container.client.manager.players.get(interaction.guildId!)!;
+		const id = interaction.options.getInteger('id', true) - 1;
 
-	// }
+		if (!player || !player.queue.size) {
+			return interaction.reply({ content: 'The queue is currently empty.', ephemeral: true });
+		}
 
-	// public async queueRemove(interaction: Subcommand.ChatInputCommandInteraction) {}
+		if (id < 0 || id >= player.queue.size) {
+			return interaction.reply({ content: 'Invalid song ID.', ephemeral: true });
+		}
+
+		const removedTrack = player.queue.remove(id);
+		return interaction.reply({ content: `Removed: ${inlineCode(removedTrack[0].title)}` });
+	}
 }
