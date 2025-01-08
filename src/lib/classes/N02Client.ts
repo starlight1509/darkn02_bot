@@ -38,6 +38,10 @@ export class N02Client extends SapphireClient {
 			clientName: 'magmastream/2.6.0'
 		});
 
+		this.once(Events.ClientReady, () => {
+			this.manager.init(this.user!.id);
+		});
+
 		this.on(Events.Raw, (d) => {
 			this.manager.updateVoiceState(d as VoiceServer);
 		});
