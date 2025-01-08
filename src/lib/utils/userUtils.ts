@@ -9,8 +9,8 @@ export function handleChannel(channelId: Snowflake) {
 }
 
 export async function checkVoice(member: GuildMember, interaction: CommandInteraction) {
-	if (member.voice.channelId) return true;
-	else return interaction.reply({ content: 'Please join a voice channel.', ephemeral: true });
+	if (!member.voice.channelId) return interaction.reply({ content: 'Please join a voice channel.', ephemeral: true });
+	else return true;
 }
 
 export function embedGen(data?: APIEmbed) {
