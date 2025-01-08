@@ -12,7 +12,7 @@ RUN apt-get update && \
 COPY package.json .
 COPY pnpm-lock.yaml .
 
-RUN pnpm install
+RUN pnpm fetch
 
 FROM base AS builder
 
