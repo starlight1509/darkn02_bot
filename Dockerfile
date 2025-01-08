@@ -19,6 +19,7 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
 
 COPY src/ src/
 COPY tsconfig.base.json .
+COPY .swcrc .
 
 RUN pnpm build
 
