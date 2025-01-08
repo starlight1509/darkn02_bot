@@ -15,11 +15,12 @@ COPY pnpm-lock.yaml .
 
 FROM base AS builder
 
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install
+
 COPY src/ src/
 COPY tsconfig.base.json .
 
-RUN pnpm fetch && \
-    pnpm build
+RUN pnpm build
 
 FROM base
 
