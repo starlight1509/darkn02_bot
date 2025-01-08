@@ -7,23 +7,23 @@ WORKDIR /usr/app
 
 RUN apt-get update && \
     apt-get upgrade -y && \
+    apt-get autoremove && \
     corepack enable
 
 COPY package.json .
 COPY pnpm-lock.yaml .
-
-RUN pnpm fetch
 
 FROM base AS builder
 
 COPY src/ src/
 COPY tsconfig.base.json .
 
-RUN pnpm build
+RUN pnpm fetch && \
+    pnpm build
 
 FROM base
 
-COPY --from=base /usr/app/node_modules node_modules
+COPY --from=builder /usr/app/node_modules node_modules
 COPY --from=builder /usr/app/build build
 
 CMD [ "pnpm", "start" ]
