@@ -12,6 +12,7 @@ RUN apt-get update && \
 
 COPY package.json .
 COPY pnpm-lock.yaml .
+COPY app.json .
 
 FROM base AS builder
 
