@@ -21,7 +21,13 @@ import { GuildMember, inlineCode } from 'discord.js';
 		},
 		{
 			name: 'queue',
-			chatInputRun: 'audioQueue'
+			type: 'group',
+			entries: [
+				{
+					name: 'remove',
+					chatInputRun: 'queueRemove'
+				}
+			]
 		},
 		{
 			name: 'volume',
@@ -151,17 +157,17 @@ export class MusicCommand extends N02Subcommand {
 		if (player.queue.size < id! || player.queue.size < 0) interaction.reply({ content: "There's no song left after the current song" });
 
 		if (id && (id < 1 || id > player.queue.size)) {
-			return interaction.reply({ content: "Invalid song ID.", ephemeral: true });
-		  }
+			return interaction.reply({ content: 'Invalid song ID.', ephemeral: true });
+		}
 
-		  player.stop();
+		player.stop();
 
-		  if (id) {
+		if (id) {
 			player.stop(id - 1);
 			return interaction.reply({ content: `Skipped to song id ${id}`, ephemeral: true });
-		  } else {
+		} else {
 			return interaction.reply({ content: 'Song skipped', ephemeral: true });
-		  }
+		}
 	}
 	public async audioDisconnect(interaction: Subcommand.ChatInputCommandInteraction) {
 		const player = this.container.client.manager.players.get(interaction.guildId!)!;
