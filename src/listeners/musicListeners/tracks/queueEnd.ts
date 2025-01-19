@@ -4,12 +4,11 @@ import { container, Listener } from '@sapphire/framework';
 import { Player } from 'magmastream';
 
 @ApplyOptions<Listener.Options>({
-	emitter: container.client.manager,
-	event: 'queueEnd'
+	emitter: container.client.manager
 })
-export class NodeListeners extends Listener {
+export class TrackListeners extends Listener {
 	public override async run(player: Player) {
-		if (player.isAutoplay) player.isAutoplay;
+		if (player.isAutoplay) player.setAutoplay(true, this.container.client);
 		else player.destroy();
 		handleChannel(player.textChannel!)!.send('Queue has ended.');
 	}

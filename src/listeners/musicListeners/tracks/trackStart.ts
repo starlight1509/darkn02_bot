@@ -6,10 +6,9 @@ import { Player, Track } from 'magmastream';
 import { DurationFormatter } from '@sapphire/time-utilities';
 
 @ApplyOptions<Listener.Options>({
-	emitter: container.client.manager,
-	event: 'trackStart'
+	emitter: container.client.manager
 })
-export class NodeListeners extends Listener {
+export class TrackListeners extends Listener {
 	public override async run(player: Player, track: Track) {
 		const trackDuration = new DurationFormatter().format(track.duration);
 		const p = await handleChannel(player.textChannel!)!.send({

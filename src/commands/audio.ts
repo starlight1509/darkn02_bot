@@ -26,6 +26,10 @@ import { GuildMember, inlineCode } from 'discord.js';
 				{
 					name: 'remove',
 					chatInputRun: 'queueRemove'
+				},
+				{
+					name: 'list',
+					chatInputRun: 'queueList'
 				}
 			]
 		},
@@ -79,6 +83,8 @@ export class MusicCommand extends N02Subcommand {
 									input.setName('id').setDescription('Song ID to remove').setRequired(true).setMaxValue(25)
 								)
 						)
+						.addSubcommand((command) =>
+							command.setName('list').setDescription('Show queue list'))
 				)
 		);
 	}
@@ -87,7 +93,7 @@ export class MusicCommand extends N02Subcommand {
 		const member = interaction.member as GuildMember;
 		const query = interaction.options.getString('query', true);
 
-		await checkVoice(member, interaction);
+		await checkVoice(member);
 
 		const player = this.container.client.manager.create({
 			guild: interaction.guildId!,
@@ -99,7 +105,7 @@ export class MusicCommand extends N02Subcommand {
 
 		const res = await this.container.client.manager.search(query, interaction.user);
 
-		player.connect();
+		if (player) player.connect();
 
 		switch (res.loadType) {
 			case 'playlist':
@@ -123,7 +129,7 @@ export class MusicCommand extends N02Subcommand {
 		const player = this.container.client.manager.players.get(interaction.guildId!)!;
 		const member = interaction.member as GuildMember;
 
-		await checkVoice(member, interaction);
+		await checkVoice(member);
 
 		if (!player.paused && player.playing) {
 			player.pause(true);
@@ -138,7 +144,7 @@ export class MusicCommand extends N02Subcommand {
 		const player = this.container.client.manager.players.get(interaction.guildId!)!;
 		const member = interaction.member as GuildMember;
 
-		await checkVoice(member, interaction);
+		await checkVoice(member);
 
 		if (player.paused && !player.playing && !player.queue.size) {
 			return interaction.reply({ content: `The audio player is either ${inlineCode('paused')} or ${inlineCode('stopped')}.` });
@@ -152,7 +158,7 @@ export class MusicCommand extends N02Subcommand {
 		const id = interaction.options.getInteger('id');
 		const member = interaction.member as GuildMember;
 
-		await checkVoice(member, interaction);
+		await checkVoice(member);
 
 		if (player.queue.size < id! || player.queue.size < 0) interaction.reply({ content: "There's no song left after the current song" });
 
@@ -183,6 +189,7 @@ export class MusicCommand extends N02Subcommand {
 	public async queueRemove(interaction: Subcommand.ChatInputCommandInteraction) {
 		const player = this.container.client.manager.players.get(interaction.guildId!)!;
 		const id = interaction.options.getInteger('id', true) - 1;
+		const member = interaction.member as GuildMember;
 
 		if (!player || !player.queue.size) {
 			return interaction.reply({ content: 'The queue is currently empty.', ephemeral: true });
@@ -192,7 +199,12 @@ export class MusicCommand extends N02Subcommand {
 			return interaction.reply({ content: 'Invalid song ID.', ephemeral: true });
 		}
 
+		await checkVoice(member, interaction);
+
 		const removedTrack = player.queue.remove(id);
 		return interaction.reply({ content: `Removed: ${inlineCode(removedTrack[0].title)}` });
+	}
+	public async queueList(interaction: Subcommand.ChatInputCommandInteraction) {
+		return interaction.reply({ content: 'Soon.' });
 	}
 }
