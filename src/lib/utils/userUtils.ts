@@ -8,7 +8,8 @@ export function handleChannel(channelId: Snowflake) {
 	throw new Error(`Channel with ID ${channelId} is not a text channel or does not exist.`);
 }
 
-export function checkVoice(member: GuildMember, interaction: CommandInteraction) {
+export async function checkVoice(member: GuildMember, interaction: CommandInteraction) {
+	await interaction.deferReply();
 	if (!member.voice.channel) return interaction.reply({ content: 'Please join a voice channel.', ephemeral: true });
 	else return true;
 }

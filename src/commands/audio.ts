@@ -89,7 +89,6 @@ export class MusicCommand extends N02Subcommand {
 		);
 	}
 	public async audioPlay(interaction: Subcommand.ChatInputCommandInteraction) {
-		await interaction.deferReply();
 		const member = interaction.member as GuildMember;
 		const query = interaction.options.getString('query', true);
 
@@ -111,7 +110,7 @@ export class MusicCommand extends N02Subcommand {
 			case 'playlist':
 				player.queue.add(res.playlist!.tracks);
 				if (!player.playing && !player.paused && player.queue.size === res.playlist!.tracks.length) player.play();
-				return interaction.editReply({
+				return interaction.reply({
 					content: `Added ${inlineCode(`${res.playlist!.tracks.length}`)} track(s) from ${inlineCode(`${res.playlist!.name}`)}`
 				});
 			case 'search':
@@ -120,9 +119,9 @@ export class MusicCommand extends N02Subcommand {
 
 				player.queue.add(track);
 				if (!player.playing && !player.paused && !player.queue.length) player.play();
-				return interaction.editReply({ content: `Added: ${inlineCode(track.title)}` });
+				return interaction.reply({ content: `Added: ${inlineCode(track.title)}` });
 			default:
-				return interaction.editReply({ content: 'Query not found', options: { ephemeral: true } });
+				return interaction.reply({ content: 'Query not found', options: { ephemeral: true } });
 		}
 	}
 	public async audioPause(interaction: Subcommand.ChatInputCommandInteraction) {
