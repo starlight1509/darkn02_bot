@@ -93,7 +93,7 @@ export class MusicCommand extends N02Subcommand {
 		const member = interaction.member as GuildMember;
 		const query = interaction.options.getString('query', true);
 
-		await checkVoice(member);
+		checkVoice(member, interaction);
 
 		const player = this.container.client.manager.create({
 			guild: interaction.guildId!,
@@ -129,7 +129,7 @@ export class MusicCommand extends N02Subcommand {
 		const player = this.container.client.manager.players.get(interaction.guildId!)!;
 		const member = interaction.member as GuildMember;
 
-		await checkVoice(member);
+		checkVoice(member, interaction);
 
 		if (!player.paused && player.playing) {
 			player.pause(true);
@@ -144,7 +144,7 @@ export class MusicCommand extends N02Subcommand {
 		const player = this.container.client.manager.players.get(interaction.guildId!)!;
 		const member = interaction.member as GuildMember;
 
-		await checkVoice(member);
+		checkVoice(member, interaction);
 
 		if (player.paused && !player.playing && !player.queue.size) {
 			return interaction.reply({ content: `The audio player is either ${inlineCode('paused')} or ${inlineCode('stopped')}.` });
@@ -158,7 +158,7 @@ export class MusicCommand extends N02Subcommand {
 		const id = interaction.options.getInteger('id');
 		const member = interaction.member as GuildMember;
 
-		await checkVoice(member);
+		checkVoice(member, interaction);
 
 		if (player.queue.size < id! || player.queue.size < 0) interaction.reply({ content: "There's no song left after the current song" });
 
@@ -179,7 +179,7 @@ export class MusicCommand extends N02Subcommand {
 		const player = this.container.client.manager.players.get(interaction.guildId!)!;
 		const member = interaction.member as GuildMember;
 
-		await checkVoice(member, interaction);
+		checkVoice(member, interaction);
 
 		if (player) player.destroy();
 		else interaction.reply({ content: 'The queue is empty.' });
@@ -199,7 +199,7 @@ export class MusicCommand extends N02Subcommand {
 			return interaction.reply({ content: 'Invalid song ID.', ephemeral: true });
 		}
 
-		await checkVoice(member, interaction);
+		checkVoice(member, interaction);
 
 		const removedTrack = player.queue.remove(id);
 		return interaction.reply({ content: `Removed: ${inlineCode(removedTrack[0].title)}` });
