@@ -2,7 +2,7 @@ import configs from '#lib/configs';
 import { SapphireClient } from '@sapphire/framework';
 import { envParseString } from '@skyra/env-utilities';
 import { ActivityType, Events, Partials } from 'discord.js';
-import { Manager, VoiceServer } from 'magmastream';
+import { Manager, SearchPlatform, VoiceServer } from 'magmastream';
 
 export class N02Client extends SapphireClient {
 	public constructor() {
@@ -30,7 +30,8 @@ export class N02Client extends SapphireClient {
 		this.manager = new Manager({
 			lastFmApiKey: envParseString('LASTFM_KEY'),
 			nodes: configs.lavaNodes,
-			defaultSearchPlatform: 'youtube music',
+			autoPlay: true,
+			defaultSearchPlatform: SearchPlatform.YouTubeMusic,
 			send: (id, payload) => {
 				const guild = this.guilds.cache.get(id);
 				if (guild) guild.shard.send(payload);
