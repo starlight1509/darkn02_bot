@@ -8,7 +8,7 @@ import { Player } from 'magmastream';
 })
 export class TrackListeners extends Listener {
 	public override async run(player: Player) {
-		if (player.isAutoplay) player.setAutoplay(true, this.container.client);
+		if (player.isAutoplay) player.isAutoplay;
 		else player.destroy();
 		handleChannel(player.textChannel!)!.send('Queue has ended.');
 	}
