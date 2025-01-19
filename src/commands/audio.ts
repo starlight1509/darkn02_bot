@@ -121,7 +121,7 @@ export class MusicCommand extends N02Subcommand {
 				if (!player.playing && !player.paused && !player.queue.length) player.play();
 				return interaction.reply({ content: `Added: ${inlineCode(track.title)}` });
 			default:
-				return interaction.reply({ content: 'Query not found', options: { ephemeral: true } });
+				return interaction.reply({ content: 'Query not found', flags: ['Ephemeral'] });
 		}
 	}
 	public async audioPause(interaction: Subcommand.ChatInputCommandInteraction) {
@@ -132,10 +132,10 @@ export class MusicCommand extends N02Subcommand {
 
 		if (!player.paused && player.playing) {
 			player.pause(true);
-			return interaction.reply({ content: 'Paused', ephemeral: true });
+			return interaction.reply({ content: 'Paused', flags: ['Ephemeral'] });
 		} else {
 			player.pause(false);
-			return interaction.reply({ content: 'Resumed', ephemeral: true });
+			return interaction.reply({ content: 'Resumed', flags: ['Ephemeral'] });
 		}
 	}
 	public async audioVolume(interaction: Subcommand.ChatInputCommandInteraction) {
@@ -162,16 +162,16 @@ export class MusicCommand extends N02Subcommand {
 		if (player.queue.size < id! || player.queue.size < 0) interaction.reply({ content: "There's no song left after the current song" });
 
 		if (id && (id < 1 || id > player.queue.size)) {
-			return interaction.reply({ content: 'Invalid song ID.', ephemeral: true });
+			return interaction.reply({ content: 'Invalid song ID.', flags: ['Ephemeral'] });
 		}
 
 		player.stop();
 
 		if (id) {
 			player.stop(id - 1);
-			return interaction.reply({ content: `Skipped to song id ${id}`, ephemeral: true });
+			return interaction.reply({ content: `Skipped to song id ${id}`, flags: ['Ephemeral'] });
 		} else {
-			return interaction.reply({ content: 'Song skipped', ephemeral: true });
+			return interaction.reply({ content: 'Song skipped', flags: ['Ephemeral'] });
 		}
 	}
 	public async audioDisconnect(interaction: Subcommand.ChatInputCommandInteraction) {
@@ -183,7 +183,7 @@ export class MusicCommand extends N02Subcommand {
 		if (player) player.destroy();
 		else interaction.reply({ content: 'The queue is empty.' });
 
-		return interaction.reply({ content: 'Player Stopped', ephemeral: true });
+		return interaction.reply({ content: 'Player Stopped', flags: ['Ephemeral'] });
 	}
 	public async queueRemove(interaction: Subcommand.ChatInputCommandInteraction) {
 		const player = this.container.client.manager.players.get(interaction.guildId!)!;
@@ -191,11 +191,11 @@ export class MusicCommand extends N02Subcommand {
 		const member = interaction.member as GuildMember;
 
 		if (!player || !player.queue.size) {
-			return interaction.reply({ content: 'The queue is currently empty.', ephemeral: true });
+			return interaction.reply({ content: 'The queue is currently empty.', flags: ['Ephemeral'] });
 		}
 
 		if (id < 0 || id >= player.queue.size) {
-			return interaction.reply({ content: 'Invalid song ID.', ephemeral: true });
+			return interaction.reply({ content: 'Invalid song ID.', flags: ['Ephemeral'] });
 		}
 
 		checkVoice(member, interaction);
