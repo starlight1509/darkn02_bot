@@ -7,7 +7,7 @@ declare module '@skyra/env-utilities' {
 		APPLICATION_ID: string;
 		LAVALINK_HOST: NodeOptions[];
 		LASTFM_KEY: string;
-		SEARCH_PROVIDERS: SearchPlatform;
+		SEARCH_ENGINES: SearchPlatform;
 	}
 }
 

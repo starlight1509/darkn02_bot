@@ -31,7 +31,7 @@ export class N02Client extends SapphireClient {
 			lastFmApiKey: envParseString('LASTFM_KEY'),
 			nodes: process.env['LAVALINK_HOST'] || configs.lavaNodes,
 			autoPlay: true,
-			defaultSearchPlatform: envParseString('SEARCH_PROVIDERS'),
+			defaultSearchPlatform: process.env['SEARCH_ENGINES'],
 			send: (id, payload) => {
 				const guild = this.guilds.cache.get(id);
 				if (guild) guild.shard.send(payload);
