@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "swc src -d build --strip-leading-paths --delete-dir-on-start",
     "build:watch": "swc -w src -d build --strip-leading-paths --delete-dir-on-start",
-    "build:dev": "conc 'pnpm swc-watch' 'pnpm start'",
+    "build:dev": "conc 'pnpm build:watch' 'pnpm start'",
     "start": "node --enable-source-maps .",
     "format": "prettier --write \"src/**/*.ts\""
   },
