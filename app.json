@@ -1,10 +1,5 @@
 {
-
     "name": "Dark_N02 Bot",
     "description": "A discord.js bot",
-    "buildpacks": [
-        {
-            "url": "https://github.com/paketo-buildpacks/nodejs"
-        }
-    ]
+    "image": "paketo-buildpacks/nodejs"
 }

@@ -36,7 +36,7 @@ export class N02Client extends SapphireClient {
 				const guild = this.guilds.cache.get(id);
 				if (guild) guild.shard.send(payload);
 			},
-			clientName: `${this.user!.username}`
+			clientName: `${this.user?.username}`
 		});
 
 		this.once(Events.ClientReady, () => {
