@@ -1,7 +1,6 @@
 import { ApplyOptions } from '@sapphire/decorators';
 import { InteractionHandler, InteractionHandlerTypes } from '@sapphire/framework';
 import { AutocompleteInteraction } from 'discord.js';
-import { YouTube } from 'youtube-sr';
 
 @ApplyOptions<InteractionHandler.Options>({
 	interactionHandlerType: InteractionHandlerTypes.Autocomplete
@@ -17,12 +16,9 @@ export class AutocompleteHandler extends InteractionHandler {
 
 		switch (focused.name) {
 			case 'query': {
-				const searches = await YouTube.search(focused.value, {
-					limit: 25,
-					type: 'video'
-				});
+				const res = await this.container.client.manager.search(focused.value, interaction.user);
 
-				return this.some(searches.map((matches) => ({ name: matches.title!, value: matches.url })));
+				return this.some(res.tracks.slice(0, 20).map((track) => ({ name: `${track.title} by ${track.author}`, value: track.uri })));
 			}
 			default:
 				return this.none();

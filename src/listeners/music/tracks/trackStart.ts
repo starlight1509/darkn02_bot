@@ -11,7 +11,7 @@ import { DurationFormatter } from '@sapphire/time-utilities';
 export class TrackListeners extends Listener {
 	public override async run(player: Player, track: Track) {
 		const trackDuration = new DurationFormatter().format(track.duration);
-		const p = await handleChannel(player.textChannel!)!.send({
+		const p = await handleChannel(player.textChannelId!)!.send({
 			embeds: [
 				embedGen({
 					title: 'Now Playing',
