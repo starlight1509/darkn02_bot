@@ -2,7 +2,7 @@ import configs from '#lib/configs';
 import { SapphireClient } from '@sapphire/framework';
 import { envParseString } from '@skyra/env-utilities';
 import { ActivityType, Events, Partials } from 'discord.js';
-import { Manager, NodeOptions, VoiceServer } from 'magmastream';
+import { Manager, VoiceServer } from 'magmastream';
 
 export class N02Client extends SapphireClient {
 	public constructor() {
@@ -29,7 +29,7 @@ export class N02Client extends SapphireClient {
 		};
 		this.manager = new Manager({
 			lastFmApiKey: envParseString('LASTFM_KEY'),
-			nodes: process.env['LAVALINK_HOST'] as NodeOptions[] || configs.lavaNodes,
+			nodes: configs.lavaNodes,
 			autoPlay: true,
 			defaultSearchPlatform: process.env['SEARCH_ENGINES'],
 			send: (id, payload) => {

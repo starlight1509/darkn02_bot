@@ -2,16 +2,7 @@ import { LogLevel } from '@sapphire/framework';
 import { GatewayIntentBits } from 'discord.js';
 import { NodeOptions } from 'magmastream';
 
-const lavaNodes: NodeOptions[] = [
-	{
-		host: '0.0.0.0',
-		password: 'youshallnotpass',
-		port: 2333,
-		secure: false,
-		identifier: 'DummyNode',
-		retryAmount: 5
-	}
-];
+const lavaNodes: NodeOptions[] = JSON.parse(process.env['LAVALINK_HOST']);
 
 const intents: GatewayIntentBits[] = [
 	GatewayIntentBits.GuildMembers,

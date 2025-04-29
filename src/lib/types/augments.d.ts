@@ -5,7 +5,7 @@ declare module '@skyra/env-utilities' {
 	interface Env {
 		OWNER_ID: ArrayString;
 		APPLICATION_ID: string;
-		LAVALINK_HOST: NodeOptions[];
+		LAVALINK_HOST: ArrayString;
 		LASTFM_KEY: string;
 		SEARCH_ENGINES: SearchPlatform;
 	}
